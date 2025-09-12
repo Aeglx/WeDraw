@@ -62,7 +62,7 @@
 
       <div class="tips">
         <span>用户名: admin</span>
-        <span>密码: 任意</span>
+        <span>密码: admin123</span>
       </div>
     </el-form>
   </div>
@@ -85,7 +85,7 @@ const password = ref()
 
 const loginForm = ref({
   username: 'admin',
-  password: '123456'
+  password: 'admin123'
 })
 
 const loginRules = {
