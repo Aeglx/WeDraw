@@ -47,44 +47,44 @@ app.get('/health', (req, res) => {
 
 // 服务路由配置
 const services = {
-  '/auth': {
-    target: `http://localhost:${process.env.USER_CENTER_PORT || 3001}`,
-    pathRewrite: { '^/auth': '' },
+  '/api/auth': {
+    target: `http://localhost:${process.env.USER_CENTER_PORT || 3002}`,
+    pathRewrite: { '^/api/auth': '' },
     requireAuth: false
   },
-  '/user': {
-    target: `http://localhost:${process.env.USER_CENTER_PORT || 3001}`,
-    pathRewrite: { '^/user': '' },
+  '/api/user': {
+    target: `http://localhost:${process.env.USER_CENTER_PORT || 3002}`,
+    pathRewrite: { '^/api/user': '' },
     requireAuth: true
   },
-  '/official': {
+  '/api/official': {
     target: `http://localhost:${process.env.OFFICIAL_PORT || 3002}`,
-    pathRewrite: { '^/official': '' },
+    pathRewrite: { '^/api/official': '' },
     requireAuth: true
   },
-  '/wecom': {
+  '/api/wecom': {
     target: `http://localhost:${process.env.WECOM_PORT || 3003}`,
-    pathRewrite: { '^/wecom': '' },
+    pathRewrite: { '^/api/wecom': '' },
     requireAuth: true
   },
-  '/miniprogram': {
+  '/api/miniprogram': {
     target: `http://localhost:${process.env.MINIPROGRAM_PORT || 3004}`,
-    pathRewrite: { '^/miniprogram': '' },
+    pathRewrite: { '^/api/miniprogram': '' },
     requireAuth: true
   },
-  '/points': {
+  '/api/points': {
     target: `http://localhost:${process.env.POINTS_PORT || 3005}`,
-    pathRewrite: { '^/points': '' },
+    pathRewrite: { '^/api/points': '' },
     requireAuth: true
   },
-  '/message': {
+  '/api/message': {
     target: `http://localhost:${process.env.MESSAGE_PORT || 3006}`,
-    pathRewrite: { '^/message': '' },
+    pathRewrite: { '^/api/message': '' },
     requireAuth: true
   },
-  '/analysis': {
+  '/api/analysis': {
     target: `http://localhost:${process.env.ANALYSIS_PORT || 3007}`,
-    pathRewrite: { '^/analysis': '' },
+    pathRewrite: { '^/api/analysis': '' },
     requireAuth: true
   }
 }

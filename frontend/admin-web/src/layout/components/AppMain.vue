@@ -22,25 +22,26 @@ const key = computed(() => route.path)
 
 <style lang="scss" scoped>
 .app-main {
-  min-height: calc(100vh - 50px);
+  min-height: calc(100vh - 60px);
   width: 100%;
   position: relative;
   overflow: hidden;
-  padding: 20px;
-  background-color: #f0f2f5;
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background-attachment: fixed;
 }
 
 .fixed-header + .app-main {
-  padding-top: 70px;
+  padding-top: 84px;
 }
 
 .hasTagsView {
   .app-main {
-    min-height: calc(100vh - 84px);
+    min-height: calc(100vh - 94px);
   }
 
   .fixed-header + .app-main {
-    padding-top: 104px;
+    padding-top: 118px;
   }
 }
 </style>
