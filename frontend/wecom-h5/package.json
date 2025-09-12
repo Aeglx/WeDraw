@@ -1,0 +1,29 @@
+{
+  "name": "wecom-h5",
+  "version": "1.0.0",
+  "description": "企业微信H5页面",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4",
+    "pinia": "^2.1.6",
+    "vant": "^4.6.2",
+    "axios": "^1.5.0",
+    "dayjs": "^1.11.9"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.3.4",
+    "vite": "^4.4.9",
+    "sass": "^1.64.2",
+    "postcss": "^8.4.27",
+    "autoprefixer": "^10.4.14"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

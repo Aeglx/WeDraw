@@ -1,0 +1,39 @@
+# Node.js 微服务 Dockerfile 模板
+# 使用方法：复制此文件到各个服务目录并重命名为 Dockerfile
+
+# 使用官方 Node.js 运行时作为基础镜像
+FROM node:18-alpine
+
+# 设置工作目录
+WORKDIR /app
+
+# 安装 dumb-init 用于信号处理
+RUN apk add --no-cache dumb-init
+
+# 创建非root用户
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+
+# 复制 package.json 和 package-lock.json（如果存在）
+COPY package*.json ./
+
+# 安装项目依赖
+RUN npm ci --only=production && npm cache clean --force
+
+# 复制项目文件
+COPY . .
+
+# 更改文件所有者
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+
+# 暴露端口（根据具体服务修改）
+EXPOSE 3000
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node healthcheck.js
+
+# 启动应用
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "server.js"]

@@ -1,0 +1,52 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/profile/profile",
+    "pages/points/points",
+    "pages/mall/mall"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "企业微信生态",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "images/icon_home.png",
+        "selectedIconPath": "images/icon_home_selected.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/mall/mall",
+        "iconPath": "images/icon_mall.png",
+        "selectedIconPath": "images/icon_mall_selected.png",
+        "text": "积分商城"
+      },
+      {
+        "pagePath": "pages/points/points",
+        "iconPath": "images/icon_points.png",
+        "selectedIconPath": "images/icon_points_selected.png",
+        "text": "我的积分"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "iconPath": "images/icon_profile.png",
+        "selectedIconPath": "images/icon_profile_selected.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  },
+  "debug": true,
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "wechat-ecosystem-platform",
+  "version": "1.0.0",
+  "description": "企业微信、公众号、小程序及积分商城管理平台",
+  "main": "index.js",
+  "scripts": {
+    "dev": "echo 'Please run specific service or frontend app'",
+    "build": "echo 'Please build specific frontend app'",
+    "start": "echo 'Please start specific service'",
+    "install:all": "npm run install:frontend && npm run install:backend",
+    "install:frontend": "cd frontend/admin-web && npm install && cd ../official-h5 && npm install && cd ../wecom-h5 && npm install && cd ../points-h5 && npm install && cd ../miniprogram && npm install",
+    "install:backend": "cd backend/api-gateway && npm install && cd ../user-center && npm install && cd ../official && npm install && cd ../wecom && npm install && cd ../miniprogram && npm install && cd ../points && npm install && cd ../message && npm install && cd ../analysis && npm install"
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "official-account",
+    "wecom",
+    "points-mall",
+    "microservices"
+  ],
+  "author": "Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
