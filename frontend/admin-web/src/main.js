@@ -9,6 +9,7 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import App from './App.vue'
 import router from './router'
 import { setupDirectives } from '@/directives'
+import { setupComponents } from '@/components'
 import './assets/styles/index.scss'
 
 const app = createApp(App)
@@ -20,6 +21,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 // 注册全局指令
 setupDirectives(app)
+
+// 注册全局组件
+setupComponents(app)
 
 app.use(createPinia())
 app.use(router)
