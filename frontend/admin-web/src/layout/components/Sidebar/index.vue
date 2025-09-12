@@ -60,15 +60,30 @@ const isCollapse = computed(() => !appStore.sidebar.opened)
 <style lang="scss" scoped>
 .sidebar-wrapper {
   height: 100%;
-  background-color: #304156;
+  background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23ffffff" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>') repeat;
+    pointer-events: none;
+  }
   
   .sidebar-logo {
     width: 100%;
-    height: 50px;
-    line-height: 50px;
-    background: #2b2f3a;
+    height: 60px;
+    line-height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     text-align: center;
     overflow: hidden;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     
     .sidebar-logo-link {
       display: flex;
@@ -76,27 +91,36 @@ const isCollapse = computed(() => !appStore.sidebar.opened)
       justify-content: center;
       height: 100%;
       text-decoration: none;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.02);
+      }
       
       .sidebar-logo-img {
-        width: 32px;
-        height: 32px;
-        margin-right: 8px;
+        width: 36px;
+        height: 36px;
+        margin-right: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       }
       
       .sidebar-title {
-        font-size: 14px;
+        font-size: 16px;
         color: #fff;
         font-weight: 600;
         margin: 0;
         white-space: nowrap;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
     }
   }
   
   .el-menu {
     border: none;
-    height: calc(100% - 50px);
+    height: calc(100% - 60px);
     width: 100% !important;
+    background: transparent;
   }
 }
 

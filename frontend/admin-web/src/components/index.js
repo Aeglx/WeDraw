@@ -20,7 +20,16 @@ const components = {
  */
 export function setupComponents(app) {
   Object.keys(components).forEach(key => {
-    app.component(key, components[key])
+    // 检查组件是否已经注册，避免重复注册
+    try {
+      const existingComponent = app.component(key)
+      if (!existingComponent) {
+        app.component(key, components[key])
+      }
+    } catch (error) {
+      // 如果组件不存在，注册它
+      app.component(key, components[key])
+    }
   })
 }
 

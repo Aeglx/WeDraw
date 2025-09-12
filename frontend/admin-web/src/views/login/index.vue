@@ -141,40 +141,70 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-$bg: #283443;
+$bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 $light_gray: #fff;
 $cursor: #fff;
+$card-bg: rgba(255, 255, 255, 0.95);
+$shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 
 .login-container {
   min-height: 100vh;
   width: 100%;
-  background-color: $bg;
+  background: $bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   overflow: hidden;
+
+  // 添加装饰性背景元素
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+    animation: float 20s ease-in-out infinite;
+  }
 
   .login-form {
     position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
+    width: 420px;
+    max-width: 90%;
+    padding: 40px;
     margin: 0 auto;
-    overflow: hidden;
+    background: $card-bg;
+    border-radius: 16px;
+    box-shadow: $shadow;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 1;
   }
 
   .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
+    font-size: 13px;
+    color: #666;
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(103, 194, 58, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #67c23a;
 
     span {
-      &:first-of-type {
-        margin-right: 16px;
+      display: block;
+      margin-bottom: 4px;
+      
+      &:last-child {
+        margin-bottom: 0;
       }
     }
   }
 
   .svg-container {
     padding: 6px 5px 6px 15px;
-    color: $cursor;
+    color: #409eff;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
@@ -182,13 +212,18 @@ $cursor: #fff;
 
   .title-container {
     position: relative;
+    margin-bottom: 40px;
 
     .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
+      font-size: 28px;
+      color: #303133;
+      margin: 0;
       text-align: center;
-      font-weight: bold;
+      font-weight: 600;
+      background: linear-gradient(135deg, #409eff, #667eea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   }
 
@@ -197,15 +232,72 @@ $cursor: #fff;
     right: 10px;
     top: 7px;
     font-size: 16px;
-    color: $cursor;
+    color: #909399;
     cursor: pointer;
     user-select: none;
+    transition: color 0.3s ease;
+    
+    &:hover {
+      color: #409eff;
+    }
   }
 
   .thirdparty-button {
     position: absolute;
     right: 0;
     bottom: 6px;
+  }
+}
+
+// 添加动画
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+// 表单项动画
+:deep(.el-form-item) {
+  margin-bottom: 24px;
+  
+  .el-input {
+    .el-input__wrapper {
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 4px 12px rgba(64, 158, 255, 0.2);
+      }
+      
+      &.is-focus {
+        box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+      }
+    }
+  }
+}
+
+// 按钮样式优化
+:deep(.el-button--primary) {
+  background: linear-gradient(135deg, #409eff, #667eea);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: linear-gradient(135deg, #337ecc, #5a67d8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(64, 158, 255, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 }
 </style>

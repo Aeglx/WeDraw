@@ -82,37 +82,44 @@ const logout = async () => {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 60px;
   overflow: hidden;
   position: relative;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
   .hamburger-container {
-    line-height: 46px;
+    line-height: 56px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
     -webkit-tap-highlight-color: transparent;
+    padding: 0 15px;
+    border-radius: 8px;
+    margin: 0 8px;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.025);
+      background: rgba(64, 158, 255, 0.1);
+      transform: scale(1.05);
     }
   }
 
   .breadcrumb-container {
     flex: 1;
-    margin-left: 16px;
+    margin-left: 20px;
   }
 
   .right-menu {
     display: flex;
     align-items: center;
     height: 100%;
-    line-height: 50px;
+    line-height: 60px;
+    padding-right: 20px;
 
     &:focus {
       outline: none;
