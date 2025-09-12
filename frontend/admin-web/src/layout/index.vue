@@ -67,6 +67,7 @@ const handleClickOutside = () => {
   z-index: 9;
   width: calc(100% - #{$sidebar-width});
   transition: width 0.28s;
+  height: 60px;
 }
 
 .hideSidebar .fixed-header {

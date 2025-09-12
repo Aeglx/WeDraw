@@ -127,44 +127,71 @@ const logout = async () => {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 8px;
+      padding: 0 12px;
       height: 100%;
       font-size: 18px;
-      color: #5a5e66;
+      color: #606266;
       vertical-align: text-bottom;
+      border-radius: 8px;
+      margin: 0 4px;
 
       &.hover-effect {
         cursor: pointer;
-        transition: background 0.3s;
+        transition: all 0.3s ease;
 
         &:hover {
-          background: rgba(0, 0, 0, 0.025);
+          background: rgba(64, 158, 255, 0.1);
+          color: #409eff;
+          transform: translateY(-2px);
         }
       }
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 0;
+      padding: 0 15px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(64, 158, 255, 0.05);
+      }
 
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 0;
         position: relative;
         display: flex;
         align-items: center;
+        padding: 8px 0;
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+          border: 2px solid #fff;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+          }
         }
 
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
           right: -20px;
-          top: 25px;
+          top: 50%;
+          transform: translateY(-50%);
           font-size: 12px;
+          color: #909399;
+          transition: all 0.3s ease;
+
+          &:hover {
+            color: #409eff;
+          }
         }
       }
     }
