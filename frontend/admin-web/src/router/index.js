@@ -42,12 +42,30 @@ const routes = [
         },
         children: [
           {
+            path: 'config',
+            name: 'OfficialConfig',
+            component: () => import('@/views/official/config/index.vue'),
+            meta: {
+              title: '基础配置',
+              icon: 'Setting'
+            }
+          },
+          {
             path: 'fans',
             name: 'OfficialFans',
             component: () => import('@/views/official/fans/index.vue'),
             meta: {
               title: '粉丝管理',
               icon: 'User'
+            }
+          },
+          {
+            path: 'menu',
+            name: 'OfficialMenu',
+            component: () => import('@/views/official/menu/index.vue'),
+            meta: {
+              title: '自定义菜单',
+              icon: 'Menu'
             }
           },
           {
@@ -60,12 +78,21 @@ const routes = [
             }
           },
           {
-            path: 'menu',
-            name: 'OfficialMenu',
-            component: () => import('@/views/official/menu/index.vue'),
+            path: 'reply',
+            name: 'OfficialReply',
+            component: () => import('@/views/official/reply/index.vue'),
             meta: {
-              title: '菜单管理',
-              icon: 'Menu'
+              title: '自动回复',
+              icon: 'ChatLineRound'
+            }
+          },
+          {
+            path: 'material',
+            name: 'OfficialMaterial',
+            component: () => import('@/views/official/material/index.vue'),
+            meta: {
+              title: '素材管理',
+              icon: 'Folder'
             }
           }
         ]
@@ -80,12 +107,48 @@ const routes = [
         },
         children: [
           {
+            path: 'apps',
+            name: 'WecomApps',
+            component: () => import('@/views/wecom/apps/index.vue'),
+            meta: {
+              title: '应用管理',
+              icon: 'Grid'
+            }
+          },
+          {
+            path: 'departments',
+            name: 'WecomDepartments',
+            component: () => import('@/views/wecom/departments/index.vue'),
+            meta: {
+              title: '部门管理',
+              icon: 'OfficeBuilding'
+            }
+          },
+          {
+            path: 'users',
+            name: 'WecomUsers',
+            component: () => import('@/views/wecom/users/index.vue'),
+            meta: {
+              title: '成员管理',
+              icon: 'User'
+            }
+          },
+          {
             path: 'contacts',
             name: 'WecomContacts',
             component: () => import('@/views/wecom/contacts/index.vue'),
             meta: {
-              title: '通讯录管理',
-              icon: 'Notebook'
+              title: '外部联系人',
+              icon: 'Phone'
+            }
+          },
+          {
+            path: 'message',
+            name: 'WecomMessage',
+            component: () => import('@/views/wecom/message/index.vue'),
+            meta: {
+              title: '消息推送',
+              icon: 'Message'
             }
           },
           {
@@ -95,15 +158,6 @@ const routes = [
             meta: {
               title: '群聊管理',
               icon: 'ChatLineRound'
-            }
-          },
-          {
-            path: 'robot',
-            name: 'WecomRobot',
-            component: () => import('@/views/wecom/robot/index.vue'),
-            meta: {
-              title: '机器人管理',
-              icon: 'Service'
             }
           }
         ]
@@ -118,6 +172,15 @@ const routes = [
         },
         children: [
           {
+            path: 'config',
+            name: 'MiniprogramConfig',
+            component: () => import('@/views/miniprogram/config/index.vue'),
+            meta: {
+              title: '基础配置',
+              icon: 'Setting'
+            }
+          },
+          {
             path: 'users',
             name: 'MiniprogramUsers',
             component: () => import('@/views/miniprogram/users/index.vue'),
@@ -127,12 +190,21 @@ const routes = [
             }
           },
           {
-            path: 'config',
-            name: 'MiniprogramConfig',
-            component: () => import('@/views/miniprogram/config/index.vue'),
+            path: 'behaviors',
+            name: 'MiniprogramBehaviors',
+            component: () => import('@/views/miniprogram/behaviors/index.vue'),
             meta: {
-              title: '配置管理',
-              icon: 'Setting'
+              title: '行为分析',
+              icon: 'DataAnalysis'
+            }
+          },
+          {
+            path: 'pages',
+            name: 'MiniprogramPages',
+            component: () => import('@/views/miniprogram/pages/index.vue'),
+            meta: {
+              title: '页面管理',
+              icon: 'Document'
             }
           }
         ]
@@ -147,12 +219,21 @@ const routes = [
         },
         children: [
           {
-            path: 'goods',
-            name: 'PointsGoods',
-            component: () => import('@/views/points/goods/index.vue'),
+            path: 'products',
+            name: 'PointsProducts',
+            component: () => import('@/views/points/products/index.vue'),
             meta: {
               title: '商品管理',
               icon: 'Goods'
+            }
+          },
+          {
+            path: 'categories',
+            name: 'PointsCategories',
+            component: () => import('@/views/points/categories/index.vue'),
+            meta: {
+              title: '分类管理',
+              icon: 'Menu'
             }
           },
           {
@@ -165,12 +246,39 @@ const routes = [
             }
           },
           {
-            path: 'points-rule',
-            name: 'PointsRule',
-            component: () => import('@/views/points/rule/index.vue'),
+            path: 'transactions',
+            name: 'PointsTransactions',
+            component: () => import('@/views/points/transactions/index.vue'),
+            meta: {
+              title: '积分记录',
+              icon: 'Coin'
+            }
+          },
+          {
+            path: 'levels',
+            name: 'PointsLevels',
+            component: () => import('@/views/points/levels/index.vue'),
+            meta: {
+              title: '等级管理',
+              icon: 'Trophy'
+            }
+          },
+          {
+            path: 'rules',
+            name: 'PointsRules',
+            component: () => import('@/views/points/rules/index.vue'),
             meta: {
               title: '积分规则',
               icon: 'Medal'
+            }
+          },
+          {
+            path: 'coupons',
+            name: 'PointsCoupons',
+            component: () => import('@/views/points/coupons/index.vue'),
+            meta: {
+              title: '优惠券管理',
+              icon: 'Ticket'
             }
           }
         ]
@@ -209,6 +317,127 @@ const routes = [
             meta: {
               title: '系统配置',
               icon: 'Operation'
+            }
+          }
+        ]
+      },
+      {
+        path: 'message',
+        name: 'Message',
+        redirect: '/message/templates',
+        meta: {
+          title: '消息中心',
+          icon: 'MessageBox'
+        },
+        children: [
+          {
+            path: 'templates',
+            name: 'MessageTemplates',
+            component: () => import('@/views/message/templates/index.vue'),
+            meta: {
+              title: '消息模板',
+              icon: 'DocumentCopy'
+            }
+          },
+          {
+            path: 'queue',
+            name: 'MessageQueue',
+            component: () => import('@/views/message/queue/index.vue'),
+            meta: {
+              title: '消息队列',
+              icon: 'Sort'
+            }
+          },
+          {
+            path: 'notifications',
+            name: 'MessageNotifications',
+            component: () => import('@/views/message/notifications/index.vue'),
+            meta: {
+              title: '系统通知',
+              icon: 'Bell'
+            }
+          },
+          {
+            path: 'email',
+            name: 'MessageEmail',
+            component: () => import('@/views/message/email/index.vue'),
+            meta: {
+              title: '邮件配置',
+              icon: 'Message'
+            }
+          },
+          {
+            path: 'sms',
+            name: 'MessageSms',
+            component: () => import('@/views/message/sms/index.vue'),
+            meta: {
+              title: '短信配置',
+              icon: 'Iphone'
+            }
+          }
+        ]
+      },
+      {
+        path: 'analysis',
+        name: 'Analysis',
+        redirect: '/analysis/overview',
+        meta: {
+          title: '数据分析',
+          icon: 'DataLine'
+        },
+        children: [
+          {
+            path: 'overview',
+            name: 'AnalysisOverview',
+            component: () => import('@/views/analysis/overview/index.vue'),
+            meta: {
+              title: '数据概览',
+              icon: 'PieChart'
+            }
+          },
+          {
+            path: 'users',
+            name: 'AnalysisUsers',
+            component: () => import('@/views/analysis/users/index.vue'),
+            meta: {
+              title: '用户统计',
+              icon: 'User'
+            }
+          },
+          {
+            path: 'messages',
+            name: 'AnalysisMessages',
+            component: () => import('@/views/analysis/messages/index.vue'),
+            meta: {
+              title: '消息统计',
+              icon: 'Message'
+            }
+          },
+          {
+            path: 'points',
+            name: 'AnalysisPoints',
+            component: () => import('@/views/analysis/points/index.vue'),
+            meta: {
+              title: '积分统计',
+              icon: 'Coin'
+            }
+          },
+          {
+            path: 'pages',
+            name: 'AnalysisPages',
+            component: () => import('@/views/analysis/pages/index.vue'),
+            meta: {
+              title: '页面访问',
+              icon: 'View'
+            }
+          },
+          {
+            path: 'realtime',
+            name: 'AnalysisRealtime',
+            component: () => import('@/views/analysis/realtime/index.vue'),
+            meta: {
+              title: '实时数据',
+              icon: 'Refresh'
             }
           }
         ]
