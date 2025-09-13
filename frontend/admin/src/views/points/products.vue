@@ -521,7 +521,7 @@ const fetchProductList = async () => {
 const fetchCategoryList = async () => {
   try {
     const response = await getCategoryList()
-    categoryList.value = response.data
+    categoryList.value = response.data.rows || []
   } catch (error) {
     ElMessage.error('获取分类列表失败')
   }

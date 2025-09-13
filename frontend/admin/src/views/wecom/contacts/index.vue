@@ -393,7 +393,7 @@ const fetchUserList = async () => {
 const fetchDepartmentTree = async () => {
   try {
     const response = await getDepartmentTree({ tree: true })
-    departmentTree.value = response.data
+    departmentTree.value = response.data.departments || []
   } catch (error) {
     ElMessage.error('获取部门树失败：' + error.message)
   }
