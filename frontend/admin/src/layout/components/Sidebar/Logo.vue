@@ -27,7 +27,7 @@ defineProps({
 })
 
 const title = 'WeDraw 管理后台'
-const logo = '/logo.png' // 可以放置实际的logo图片
+const logo = null // 暂时不使用logo图片，显示文字标题
 </script>
 
 <style lang="scss" scoped>

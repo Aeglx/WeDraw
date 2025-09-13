@@ -77,7 +77,8 @@ function filterAffixTags(routes, basePath = '/') {
   let tags = []
   routes.forEach(route => {
     if (route.meta && route.meta.affix) {
-      const tagPath = path.resolve(basePath, route.path)
+      // Simple path joining function to replace path.resolve
+      const tagPath = basePath.endsWith('/') ? basePath + route.path.replace(/^\//, '') : basePath + '/' + route.path.replace(/^\//, '')
       tags.push({
         fullPath: tagPath,
         path: tagPath,

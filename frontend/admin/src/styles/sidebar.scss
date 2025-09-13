@@ -10,7 +10,7 @@
   .sidebar-container {
     transition: width 0.28s;
     width: $sideBarWidth !important;
-    background-color: $menuBg;
+    background: linear-gradient(180deg, $menuBg 0%, darken($menuBg, 3%) 100%);
     height: 100%;
     position: fixed;
     font-size: 0px;
@@ -19,6 +19,7 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
 
     // reset element-ui css
     .horizontal-collapse-transition {
@@ -73,25 +74,35 @@
       background-color: $menuBg !important;
     }
 
-    // menu hover
+    // menu hover - 现代化样式
     .submenu-title-noDropdown,
     .el-submenu__title {
       color: $menuText !important;
-      transition: all 0.2s ease-in-out !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      margin: 4px 8px;
+      border-radius: 8px;
+      position: relative;
       
       &:hover {
         background-color: $menuHover !important;
         color: #ffffff !important;
+        transform: translateX(2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
     }
 
     .el-menu-item {
       color: $menuText !important;
-      transition: all 0.2s ease-in-out !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      margin: 4px 8px;
+      border-radius: 8px;
+      position: relative;
       
       &:hover {
         background-color: $menuHover !important;
         color: #ffffff !important;
+        transform: translateX(2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         
         .svg-icon,
         .sub-el-icon {
@@ -100,8 +111,22 @@
       }
       
       &.is-active {
-        background-color: $menuActiveText !important;
+        background: linear-gradient(135deg, $menuActiveText 0%, lighten($menuActiveText, 10%) 100%) !important;
         color: #fff !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        transform: translateX(4px);
+        
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 4px;
+          height: 20px;
+          background: #ffffff;
+          border-radius: 0 2px 2px 0;
+        }
         
         .svg-icon,
         .sub-el-icon {
