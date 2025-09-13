@@ -1,12 +1,21 @@
 # WeDraw - 企业微信生态管理平台
 
+<div align="center">
+
+![GitHub stars](https://img.shields.io/github/stars/Aeglx/WeDraw?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Aeglx/WeDraw?style=social)
+![GitHub issues](https://img.shields.io/github/issues/Aeglx/WeDraw)
+![GitHub license](https://img.shields.io/github/license/Aeglx/WeDraw)
+
+</div>
+
 > 基于微服务架构的企业微信、公众号、小程序及积分商城一体化管理平台
 
 ## 📖 项目简介
 
 WeDraw 是一个完整的企业微信生态管理平台，采用微服务架构设计，支持公众号管理、企业微信管理、小程序管理和积分商城等核心功能。平台提供统一的管理后台，帮助企业高效管理微信生态下的用户运营、消息推送、数据分析和积分营销活动。
 
-### ✨ 核心特性
+## ✨ 核心特性
 
 - 🏗️ **微服务架构** - 各业务模块独立开发、部署与扩展
 - 🔐 **统一认证** - 基于JWT的无状态认证和RBAC权限模型
@@ -28,33 +37,7 @@ WeDraw 是一个完整的企业微信生态管理平台，采用微服务架构�
 - **数据存储层**: MySQL + Redis，按服务独立部署
 - **基础设施层**: 日志、监控、消息队列等支撑组件
 
-## 🛠️ 技术栈
 
-### 前端技术
-- **框架**: Vue 3 + Composition API
-- **构建工具**: Vite
-- **路由**: Vue Router 4
-- **状态管理**: Pinia
-- **UI组件**: Element Plus (管理后台) + Vant (移动端)
-- **跨端**: UniApp (小程序)
-
-### 后端技术
-- **运行环境**: Node.js 16.x
-- **Web框架**: Express
-- **ORM**: Sequelize
-- **认证**: JWT + RBAC权限模型
-
-### 数据存储
-- **数据库**: MySQL 8.0
-- **缓存**: Redis 6.x
-- **消息队列**: RabbitMQ 3.9.x
-
-### 基础设施
-- **反向代理**: Nginx 1.20.x
-- **监控**: Prometheus + Grafana
-- **日志**: Winston + ELK Stack
-- **CI/CD**: Jenkins
-- **容器化**: Docker + Docker Compose
 ## 📁 项目结构
 
 ```
@@ -83,6 +66,8 @@ WeDraw/
 └── docs/                     # 项目文档
 ```
 
+
+
 ## 🚀 功能模块
 
 ### 📱 前端应用
@@ -107,6 +92,35 @@ WeDraw/
 | **积分商城** | 积分管理、商品管理、订单处理 | 3005 |
 | **消息中心** | 多渠道消息发送、模板管理 | 3006 |
 | **数据分析** | 数据统计、报表生成 | 3007 |
+
+## 🛠️ 技术栈
+
+### 前端技术
+- **框架**: Vue 3 + Composition API
+- **构建工具**: Vite
+- **路由**: Vue Router 4
+- **状态管理**: Pinia
+- **UI组件**: Element Plus (管理后台) + Vant (移动端)
+- **跨端**: UniApp (小程序)
+
+### 后端技术
+- **运行环境**: Node.js 16.x
+- **Web框架**: Express
+- **ORM**: Sequelize
+- **认证**: JWT + RBAC权限模型
+
+### 数据存储
+- **数据库**: MySQL 8.0
+- **缓存**: Redis 6.x
+- **消息队列**: RabbitMQ 3.9.x
+
+### 基础设施
+- **反向代理**: Nginx 1.20.x
+- **监控**: Prometheus + Grafana
+- **日志**: Winston + ELK Stack
+- **CI/CD**: Jenkins
+- **容器化**: Docker + Docker Compose
+
 ## 🚀 快速开始
 
 ### 环境要求
@@ -120,7 +134,7 @@ WeDraw/
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/your-org/WeDraw.git
+git clone https://github.com/Aeglx/WeDraw.git
 cd WeDraw
 ```
 
@@ -210,6 +224,7 @@ WECHAT_APP_SECRET=your-app-secret
 WECOM_CORP_ID=your-corp-id
 WECOM_CORP_SECRET=your-corp-secret
 ```
+
 ## 📚 API 文档
 
 项目集成了 Swagger 自动生成 API 文档，启动服务后可访问：
@@ -387,6 +402,7 @@ server {
 | **测试与优化** | 3 周 | 功能测试、性能测试、安全测试、Bug 修复、性能优化 |
 | **部署与上线** | 1 周 | 环境部署、数据迁移、灰度发布、监控配置 |
 | **运维与迭代** | 持续 | 日常运维、问题修复、根据业务需求迭代功能 |
+
 ## 🤝 贡献指南
 
 我们欢迎所有形式的贡献，包括但不限于：
@@ -423,19 +439,14 @@ chore: 构建过程或辅助工具的变动
 ## 📞 联系我们
 
 - **项目维护者**: [Your Name](mailto:your.email@example.com)
-- **问题反馈**: [GitHub Issues](https://github.com/your-org/WeDraw/issues)
+- **问题反馈**: [GitHub Issues](https://github.com/Aeglx/WeDraw/issues)
 - **技术交流**: [微信群二维码]
 
 ## 🙏 致谢
 
 感谢所有为这个项目做出贡献的开发者们！
 
-## 📈 项目状态
 
-![GitHub stars](https://img.shields.io/github/stars/your-org/WeDraw?style=social)
-![GitHub forks](https://img.shields.io/github/forks/your-org/WeDraw?style=social)
-![GitHub issues](https://img.shields.io/github/issues/your-org/WeDraw)
-![GitHub license](https://img.shields.io/github/license/your-org/WeDraw)
 
 ## 📚 附录
 
