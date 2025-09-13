@@ -114,14 +114,14 @@ export function deleteMysqlScheduleTask(taskId) {
 // Redis管理相关API
 export function getRedisStatus() {
   return request({
-    url: '/api/system/database/redis/status',
+    url: '/api/v1/database/redis/status',
     method: 'get'
   })
 }
 
 export function getRedisKeys(pattern = '*', page = 1, size = 10) {
   return request({
-    url: '/api/system/database/redis/keys',
+    url: '/api/v1/database/redis/keys',
     method: 'get',
     params: {
       pattern,
@@ -133,7 +133,7 @@ export function getRedisKeys(pattern = '*', page = 1, size = 10) {
 
 export function getRedisValue(key) {
   return request({
-    url: '/api/system/database/redis/value',
+    url: '/api/v1/database/redis/value',
     method: 'get',
     params: {
       key
@@ -143,7 +143,7 @@ export function getRedisValue(key) {
 
 export function setRedisValue(key, value, ttl) {
   return request({
-    url: '/api/system/database/redis/value',
+    url: '/api/v1/database/redis/value',
     method: 'post',
     data: {
       key,
@@ -155,7 +155,7 @@ export function setRedisValue(key, value, ttl) {
 
 export function deleteRedisKey(key) {
   return request({
-    url: '/api/system/database/redis/key',
+    url: '/api/v1/database/redis/key',
     method: 'delete',
     params: {
       key
@@ -165,28 +165,28 @@ export function deleteRedisKey(key) {
 
 export function clearRedisDatabase() {
   return request({
-    url: '/api/system/database/redis/clear',
+    url: '/api/v1/database/redis/clear',
     method: 'post'
   })
 }
 
 export function backupRedisDatabase() {
   return request({
-    url: '/api/system/database/redis/backup',
+    url: '/api/v1/database/redis/backup',
     method: 'post'
   })
 }
 
 export function getRedisBackupList() {
   return request({
-    url: '/api/system/database/redis/backups',
+    url: '/api/v1/database/redis/backups',
     method: 'get'
   })
 }
 
 export function restoreRedisDatabase(backupFile) {
   return request({
-    url: '/api/system/database/redis/restore',
+    url: '/api/v1/database/redis/restore',
     method: 'post',
     data: {
       backupFile
@@ -196,7 +196,7 @@ export function restoreRedisDatabase(backupFile) {
 
 export function deleteRedisBackup(backupFile) {
   return request({
-    url: '/api/system/database/redis/backup',
+    url: '/api/v1/database/redis/backup',
     method: 'delete',
     params: {
       backupFile
@@ -206,7 +206,7 @@ export function deleteRedisBackup(backupFile) {
 
 export function createRedisScheduleTask(taskData) {
   return request({
-    url: '/api/system/database/redis/schedule',
+    url: '/api/v1/database/redis/schedule',
     method: 'post',
     data: taskData
   })
@@ -214,14 +214,14 @@ export function createRedisScheduleTask(taskData) {
 
 export function getRedisScheduleTasks() {
   return request({
-    url: '/api/system/database/redis/schedule',
+    url: '/api/v1/database/redis/schedule',
     method: 'get'
   })
 }
 
 export function updateRedisScheduleTask(taskId, taskData) {
   return request({
-    url: `/api/system/database/redis/schedule/${taskId}`,
+    url: `/api/v1/database/redis/schedule/${taskId}`,
     method: 'put',
     data: taskData
   })
@@ -229,14 +229,14 @@ export function updateRedisScheduleTask(taskId, taskData) {
 
 export function deleteRedisScheduleTask(taskId) {
   return request({
-    url: `/api/system/database/redis/schedule/${taskId}`,
+    url: `/api/v1/database/redis/schedule/${taskId}`,
     method: 'delete'
   })
 }
 
 export function getRedisInfo() {
   return request({
-    url: '/api/system/database/redis/info',
+    url: '/api/v1/database/redis/info',
     method: 'get'
   })
 }

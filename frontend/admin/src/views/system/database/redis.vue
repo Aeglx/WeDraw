@@ -332,17 +332,21 @@ import {
 } from '@element-plus/icons-vue'
 import {
   getRedisStatus,
-  getRedisDatabases,
   getRedisKeys,
-  getKeyValue,
-  setKeyValue,
-  deleteKey,
-  setKeyTTL,
-  flushExpiredKeys,
-  flushAllKeys,
-  backupRedis,
-  restoreRedis
-} from '@/api/system/redis'
+  getRedisValue,
+  setRedisValue,
+  deleteRedisKey,
+  clearRedisDatabase,
+  backupRedisDatabase,
+  getRedisBackupList,
+  restoreRedisDatabase,
+  deleteRedisBackup,
+  createRedisScheduleTask,
+  getRedisScheduleTasks,
+  updateRedisScheduleTask,
+  deleteRedisScheduleTask,
+  getRedisInfo
+} from '@/api/system/database'
 
 export default {
   name: 'RedisManagement',
@@ -430,8 +434,8 @@ export default {
     
     const getDatabaseList = async () => {
       try {
-        const response = await getRedisDatabases()
-        databaseList.value = response.data
+        // Redis通常有16个数据库（0-15）
+        databaseList.value = Array.from({ length: 16 }, (_, i) => ({ index: i, keys: 0 }))
       } catch (error) {
         ElMessage.error('获取数据库列表失败：' + error.message)
       }
@@ -490,7 +494,7 @@ export default {
     
     const viewKeyValue = async (key) => {
       try {
-        const response = await getKeyValue(selectedDatabase.value, key.key)
+        const response = await getRedisValue({ key: key.key, database: selectedDatabase.value })
         Object.assign(keyForm, response.data)
         keyDialogMode.value = 'view'
         keyDialogVisible.value = true
@@ -501,7 +505,7 @@ export default {
     
     const editKey = async (key) => {
       try {
-        const response = await getKeyValue(selectedDatabase.value, key.key)
+        const response = await getRedisValue({ key: key.key, database: selectedDatabase.value })
         Object.assign(keyForm, response.data)
         keyDialogMode.value = 'edit'
         keyDialogVisible.value = true
@@ -526,7 +530,7 @@ export default {
     const saveKey = async () => {
       saveKeyLoading.value = true
       try {
-        await setKeyValue(selectedDatabase.value, keyForm)
+        await setRedisValue({ database: selectedDatabase.value, ...keyForm })
         ElMessage.success('保存成功')
         keyDialogVisible.value = false
         searchKeys()
@@ -549,7 +553,7 @@ export default {
           }
         )
         
-        await deleteKey(selectedDatabase.value, key.key)
+        await deleteRedisKey({ key: key.key, database: selectedDatabase.value })
         ElMessage.success('删除成功')
         searchKeys()
       } catch (error) {

@@ -1344,57 +1344,190 @@ app.get('/api/dashboard/order-stats', (req, res) => {
 
 // 模拟系统状态API
 app.get('/api/system/status', (req, res) => {
-  console.log('🔍 System Status API called');
-  
-  const systemStatus = {
-    overall: 'healthy',
-    services: {
-      database: {
-        status: 'online',
-        responseTime: '12ms',
-        lastCheck: new Date().toISOString()
-      },
-      redis: {
-        status: 'online',
-        responseTime: '3ms',
-        lastCheck: new Date().toISOString()
-      },
-      apiGateway: {
-        status: 'online',
-        responseTime: '8ms',
-        lastCheck: new Date().toISOString()
-      },
-      userCenter: {
-        status: 'online',
-        responseTime: '15ms',
-        lastCheck: new Date().toISOString()
-      },
-      pointsMall: {
-        status: 'online',
-        responseTime: '20ms',
-        lastCheck: new Date().toISOString()
-      }
-    },
-    performance: {
-      cpuUsage: 45.2,
-      memoryUsage: 68.5,
-      diskUsage: 32.1,
-      networkLatency: 8
-    },
-    alerts: [
-      {
-        level: 'warning',
-        message: 'CPU使用率较高',
-        timestamp: new Date(Date.now() - 300000).toISOString()
-      }
-    ],
-    lastUpdated: new Date().toISOString()
-  };
-  
+  console.log('📊 System Status API called');
   res.json({
     code: 200,
-    msg: '查询成功',
-    data: systemStatus
+    msg: '操作成功',
+    data: {
+      cpu: {
+        usage: 45.2,
+        cores: 8,
+        model: 'Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz'
+      },
+      memory: {
+        total: 16384, // MB
+        used: 8192,
+        free: 8192,
+        usage: 50.0
+      },
+      disk: {
+        total: 512000, // MB
+        used: 256000,
+        free: 256000,
+        usage: 50.0
+      },
+      network: {
+        upload: 1024, // KB/s
+        download: 2048
+      },
+      services: {
+        mysql: 'running',
+        redis: 'running',
+        nginx: 'running'
+      },
+      uptime: 86400, // seconds
+      loadAverage: [1.2, 1.5, 1.8],
+      timestamp: new Date().toISOString()
+    }
+  });
+});
+
+// ==================== 数据库管理API ====================
+
+// 获取MySQL连接状态
+app.get('/api/v1/database/mysql/status', (req, res) => {
+  console.log('🗄️ MySQL Status API called');
+  res.json({
+    success: true,
+    data: {
+      connected: true,
+      version: '8.0.33',
+      database: 'wedraw_db',
+      host: 'localhost',
+      port: 3306,
+      pool: {
+        total: 10,
+        used: 3,
+        waiting: 0
+      },
+      uptime: 86400,
+      timestamp: new Date().toISOString()
+    }
+  });
+});
+
+// 获取MySQL表列表
+app.get('/api/v1/database/mysql/tables', (req, res) => {
+  console.log('📋 MySQL Tables API called');
+  res.json({
+    success: true,
+    data: [
+      {
+        name: 'users',
+        rows: 1250,
+        size_mb: 2.5,
+        comment: '用户表',
+        created_at: '2024-01-01 10:00:00'
+      },
+      {
+        name: 'orders',
+        rows: 3420,
+        size_mb: 5.8,
+        comment: '订单表',
+        created_at: '2024-01-01 10:00:00'
+      },
+      {
+        name: 'products',
+        rows: 856,
+        size_mb: 1.2,
+        comment: '商品表',
+        created_at: '2024-01-01 10:00:00'
+      },
+      {
+        name: 'categories',
+        rows: 45,
+        size_mb: 0.1,
+        comment: '分类表',
+        created_at: '2024-01-01 10:00:00'
+      }
+    ]
+  });
+});
+
+// ==================== Redis管理API ====================
+
+// 获取Redis连接状态
+app.get('/api/v1/database/redis/status', (req, res) => {
+  console.log('🔴 Redis Status API called');
+  res.json({
+    success: true,
+    data: {
+      status: 'connected',
+      version: '7.0.11',
+      mode: 'standalone',
+      uptime: 86400,
+      connectedClients: 5,
+      usedMemory: '2.5M',
+      totalKeys: 1250,
+      host: 'localhost',
+      port: 6379,
+      db: 1
+    }
+  });
+});
+
+// 获取Redis键列表
+app.get('/api/v1/database/redis/keys', (req, res) => {
+  console.log('🔑 Redis Keys API called');
+  const { pattern = '*', page = 1, size = 10 } = req.query;
+  res.json({
+    success: true,
+    data: {
+      keys: [
+        'user:session:12345',
+        'user:profile:67890',
+        'cache:product:list',
+        'cache:category:tree',
+        'lock:order:processing',
+        'counter:page:views',
+        'queue:email:pending',
+        'temp:upload:abc123'
+      ],
+      total: 1250,
+      page: parseInt(page),
+      size: parseInt(size)
+    }
+  });
+});
+
+// 获取Redis键值
+app.get('/api/v1/database/redis/value', (req, res) => {
+  console.log('📄 Redis Value API called');
+  const { key } = req.query;
+  res.json({
+    success: true,
+    data: {
+      key: key,
+      value: JSON.stringify({ id: 12345, name: 'Sample Data', timestamp: new Date().toISOString() }),
+      type: 'string',
+      ttl: 3600,
+      size: 128
+    }
+  });
+});
+
+// 设置Redis键值
+app.post('/api/v1/database/redis/value', (req, res) => {
+  console.log('✏️ Redis Set Value API called');
+  const { key, value, ttl } = req.body;
+  res.json({
+    success: true,
+    message: `Key '${key}' set successfully`,
+    data: {
+      key,
+      value,
+      ttl: ttl || -1
+    }
+  });
+});
+
+// 删除Redis键
+app.delete('/api/v1/database/redis/key', (req, res) => {
+  console.log('🗑️ Redis Delete Key API called');
+  const { key } = req.query;
+  res.json({
+    success: true,
+    message: `Key '${key}' deleted successfully`
   });
 });
 
