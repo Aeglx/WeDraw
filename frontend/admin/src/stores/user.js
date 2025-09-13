@@ -40,7 +40,7 @@ export const useUserStore = defineStore('user', {
           this.name = 'Administrator'
           this.avatar = ''
           this.email = 'admin@wedraw.com'
-          this.roles = ['admin']
+          this.roles = ['admin', 'wechat-manager', 'user-manager']
           this.permissions = ['*']
           
           return mockResponse

@@ -89,7 +89,7 @@
         <el-table-column label="昵称" align="center" prop="nickname" :show-overflow-tooltip="true" />
         <el-table-column label="性别" align="center" prop="gender" width="80">
           <template #default="scope">
-            <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.gender"/>
+            <dict-tag :options="dict.sys_user_sex" :value="scope.row.gender"/>
           </template>
         </el-table-column>
         <el-table-column label="地区" align="center" prop="location" width="120">
@@ -186,7 +186,7 @@
         <el-descriptions-item label="OpenID">{{ viewForm.openid }}</el-descriptions-item>
         <el-descriptions-item label="UnionID">{{ viewForm.unionid || '无' }}</el-descriptions-item>
         <el-descriptions-item label="性别">
-          <dict-tag :options="dict.type.sys_user_sex" :value="viewForm.gender"/>
+          <dict-tag :options="dict.sys_user_sex" :value="viewForm.gender"/>
         </el-descriptions-item>
         <el-descriptions-item label="地区">{{ formatLocation(viewForm) }}</el-descriptions-item>
         <el-descriptions-item label="语言">{{ viewForm.language }}</el-descriptions-item>
