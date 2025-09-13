@@ -17,7 +17,7 @@ const config = {
   // 服务器配置
   server: {
     host: process.env.HOST || 'localhost',
-    port: parseInt(process.env.PORT, 10) || 3004,
+    port: parseInt(process.env.PORT, 10) || 3005,
     timeout: parseInt(process.env.SERVER_TIMEOUT, 10) || 30000,
     keepAliveTimeout: parseInt(process.env.KEEP_ALIVE_TIMEOUT, 10) || 5000
   },

@@ -582,7 +582,7 @@ export default {
           ttl = Math.floor(new Date(ttlForm.datetime).getTime() / 1000) - Math.floor(Date.now() / 1000)
         }
         
-        await setKeyTTL(selectedDatabase.value, ttlForm.key, ttl)
+        await setRedisValue({ database: selectedDatabase.value, key: ttlForm.key, ttl: ttl })
         ElMessage.success('TTL设置成功')
         ttlDialogVisible.value = false
         searchKeys()
@@ -596,7 +596,7 @@ export default {
     const flushExpired = async () => {
       flushLoading.value = true
       try {
-        await flushExpiredKeys()
+        await clearRedisDatabase({ database: selectedDatabase.value, type: 'expired' })
         ElMessage.success('过期键清理完成')
         searchKeys()
         checkConnection()
@@ -619,7 +619,7 @@ export default {
           }
         )
         
-        await flushAllKeys()
+        await clearRedisDatabase({ database: selectedDatabase.value, type: 'all' })
         ElMessage.success('所有数据已清空')
         searchKeys()
         checkConnection()
@@ -636,10 +636,18 @@ export default {
       backupDialogVisible.value = true
     }
     
+    const showRestoreDialog = () => {
+      ElMessage.info('恢复功能开发中...')
+    }
+    
+    const showScheduleDialog = () => {
+      scheduleDialogVisible.value = true
+    }
+    
     const executeBackup = async () => {
       backupLoading.value = true
       try {
-        await backupRedis(backupForm)
+        await backupRedisDatabase(backupForm)
         ElMessage.success('备份任务已启动')
         backupDialogVisible.value = false
       } catch (error) {
@@ -665,6 +673,37 @@ export default {
     
     const removeListItem = (index) => {
       keyForm.listValue.splice(index, 1)
+    }
+    
+    const batchDeleteKeys = async () => {
+      if (selectedKeys.value.length === 0) {
+        ElMessage.warning('请选择要删除的键')
+        return
+      }
+      
+      try {
+        await ElMessageBox.confirm(
+          `确定要删除选中的 ${selectedKeys.value.length} 个键吗？`,
+          '批量删除',
+          {
+            confirmButtonText: '确定删除',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        )
+        
+        for (const key of selectedKeys.value) {
+          await deleteRedisKey({ key: key.key, database: selectedDatabase.value })
+        }
+        
+        ElMessage.success('批量删除成功')
+        selectedKeys.value = []
+        searchKeys()
+      } catch (error) {
+        if (error !== 'cancel') {
+          ElMessage.error('批量删除失败：' + error.message)
+        }
+      }
     }
     
     // 生命周期
@@ -720,11 +759,14 @@ export default {
       flushExpired,
       flushAll,
       showBackupDialog,
+      showRestoreDialog,
+      showScheduleDialog,
       executeBackup,
       addHashField,
       removeHashField,
       addListItem,
-      removeListItem
+      removeListItem,
+      batchDeleteKeys
     }
   }
 }

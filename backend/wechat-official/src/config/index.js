@@ -13,7 +13,7 @@ const config = {
 
   // 服务器配置
   server: {
-    port: parseInt(process.env.PORT, 10) || 3002,
+    port: parseInt(process.env.PORT, 10) || 3004,
     host: process.env.HOST || '0.0.0.0',
     bodyLimit: process.env.BODY_LIMIT || '10mb',
     timeout: parseInt(process.env.SERVER_TIMEOUT, 10) || 30000,

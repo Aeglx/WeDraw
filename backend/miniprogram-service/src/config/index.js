@@ -8,7 +8,7 @@ const path = require('path');
 module.exports = {
   // 服务配置
   server: {
-    port: parseInt(process.env.PORT) || 3004,
+    port: parseInt(process.env.PORT) || 3003,
     host: process.env.HOST || '0.0.0.0',
     env: process.env.NODE_ENV || 'development',
     name: 'miniprogram-service',
