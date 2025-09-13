@@ -55,24 +55,58 @@
 
     .svg-icon {
       margin-right: 16px;
+      color: $menuText !important;
+      transition: color 0.2s ease-in-out !important;
     }
 
     .sub-el-icon {
       margin-right: 12px;
       margin-left: -2px;
+      color: $menuText !important;
+      transition: color 0.2s ease-in-out !important;
     }
 
     .el-menu {
       border: none;
       height: 100%;
       width: 100% !important;
+      background-color: $menuBg !important;
     }
 
     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {
+      color: $menuText !important;
+      transition: all 0.2s ease-in-out !important;
+      
       &:hover {
         background-color: $menuHover !important;
+        color: #ffffff !important;
+      }
+    }
+
+    .el-menu-item {
+      color: $menuText !important;
+      transition: all 0.2s ease-in-out !important;
+      
+      &:hover {
+        background-color: $menuHover !important;
+        color: #ffffff !important;
+        
+        .svg-icon,
+        .sub-el-icon {
+          color: #ffffff !important;
+        }
+      }
+      
+      &.is-active {
+        background-color: $menuActiveText !important;
+        color: #fff !important;
+        
+        .svg-icon,
+        .sub-el-icon {
+          color: #fff !important;
+        }
       }
     }
 
@@ -84,9 +118,17 @@
     & .el-submenu .el-menu-item {
       min-height: 50px !important;
       background-color: $subMenuBg !important;
+      color: $menuText !important;
+      transition: all 0.2s ease-in-out !important;
 
       &:hover {
         background-color: $subMenuHover !important;
+        color: #ffffff !important;
+        
+        .svg-icon,
+        .sub-el-icon {
+          color: #ffffff !important;
+        }
       }
     }
   }
@@ -199,9 +241,18 @@
 
   .nest-menu .el-submenu>.el-submenu__title,
   .el-menu-item {
+    color: $menuText !important;
+    transition: all 0.2s ease-in-out !important;
+    
     &:hover {
       // you can use $subMenuHover
       background-color: $menuHover !important;
+      color: #ffffff !important;
+      
+      .svg-icon,
+      .sub-el-icon {
+        color: #ffffff !important;
+      }
     }
   }
 

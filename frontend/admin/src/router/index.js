@@ -92,7 +92,7 @@ export const asyncRoutes = [
       {
         path: 'fans',
         name: 'WechatFans',
-        component: () => import('@/views/wechat/fans.vue'),
+        component: () => import('@/views/wechat/fans/index.vue'),
         meta: {
           title: '粉丝管理',
           icon: 'UserFilled'
