@@ -10,8 +10,8 @@ require('dotenv').config();
 // 导入自定义模块
 const logger = require('./src/utils/logger');
 const redisClient = require('./src/config/redis');
-const authMiddleware = require('./src/middleware/auth');
-const errorHandler = require('./src/middleware/errorHandler');
+const { authMiddleware } = require('./src/middleware/auth');
+const { errorHandler } = require('./src/middleware/errorHandler');
 const routes = require('./src/routes');
 const { globalLimiter } = require('./src/middleware/rateLimiter');
 

@@ -46,7 +46,7 @@ const logo = null // 暂时不使用logo图片，显示文字标题
   width: 100%;
   height: 60px;
   line-height: 60px;
-  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
   text-align: center;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
