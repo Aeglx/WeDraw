@@ -1,0 +1,26 @@
+{
+  "name": "wedraw-platform",
+  "version": "1.0.0",
+  "description": "企业微信、公众号、小程序及积分商城管理平台",
+  "main": "index.js",
+  "scripts": {
+    "dev": "echo 'Please run specific service with npm run dev:service-name'",
+    "build": "echo 'Please run specific frontend with npm run build:frontend-name'",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend && npm install && cd api-gateway && npm install && cd ../user-center && npm install && cd ../wechat-official && npm install && cd ../wecom-service && npm install && cd ../miniprogram-service && npm install && cd ../points-mall && npm install && cd ../message-center && npm install && cd ../data-analysis && npm install",
+    "install:frontend": "cd frontend && cd admin && npm install && cd ../miniprogram && npm install && cd ../wechat-h5 && npm install && cd ../wecom-h5 && npm install && cd ../points-h5 && npm install"
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "points-mall",
+    "enterprise-wechat",
+    "microservice"
+  ],
+  "author": "WeDraw Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
