@@ -106,7 +106,7 @@
         <el-table-column label="参数键名" align="center" prop="configKey" :show-overflow-tooltip="true" />
         <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true" />
         <el-table-column label="系统内置" align="center" prop="configType">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag :type="scope.row.configType === 'Y' ? 'danger' : 'primary'">
               {{ scope.row.configType === 'Y' ? '是' : '否' }}
             </el-tag>
@@ -114,12 +114,12 @@
         </el-table-column>
         <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-          <template slot-scope="scope">
+          <template #default="scope">
             <span>{{ parseTime(scope.row.createTime) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-button size="small" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
             <el-button
               size="small"
@@ -240,12 +240,24 @@ export default {
     this.getSystemInfo()
   },
   methods: {
+    // 时间格式化函数
+    parseTime,
     /** 查询参数列表 */
     getList() {
       this.loading = true
       listConfig(this.queryParams).then(response => {
-        this.configList = response.data.rows || []
-        this.total = response.data.total || 0
+        if (response.data && response.data.data) {
+          this.configList = response.data.data.rows || []
+          this.total = response.data.data.total || 0
+        } else {
+          this.configList = []
+          this.total = 0
+        }
+        this.loading = false
+      }).catch(error => {
+        console.error('获取配置列表失败:', error)
+        this.configList = []
+        this.total = 0
         this.loading = false
       })
     },

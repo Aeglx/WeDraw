@@ -12,6 +12,339 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// 模拟系统菜单列表API
+app.get('/api/user-center/system/menu/list', (req, res) => {
+  // 模拟菜单数据
+  const mockMenus = [
+    {
+      menuId: 1,
+      menuName: '系统管理',
+      parentId: 0,
+      orderNum: 1,
+      path: '/system',
+      component: 'Layout',
+      menuType: 'M',
+      visible: '0',
+      status: '0',
+      perms: '',
+      icon: 'system',
+      createTime: '2024-01-01 10:00:00',
+      children: [
+        {
+          menuId: 100,
+          menuName: '用户管理',
+          parentId: 1,
+          orderNum: 1,
+          path: 'user',
+          component: 'system/user/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'system:user:list',
+          icon: 'user',
+          createTime: '2024-01-01 10:00:00'
+        },
+        {
+          menuId: 101,
+          menuName: '角色管理',
+          parentId: 1,
+          orderNum: 2,
+          path: 'role',
+          component: 'system/role/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'system:role:list',
+          icon: 'peoples',
+          createTime: '2024-01-01 10:00:00'
+        },
+        {
+          menuId: 102,
+          menuName: '菜单管理',
+          parentId: 1,
+          orderNum: 3,
+          path: 'menu',
+          component: 'system/menu/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'system:menu:list',
+          icon: 'tree-table',
+          createTime: '2024-01-01 10:00:00'
+        },
+        {
+          menuId: 103,
+          menuName: '部门管理',
+          parentId: 1,
+          orderNum: 4,
+          path: 'dept',
+          component: 'system/dept/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'system:dept:list',
+          icon: 'tree',
+          createTime: '2024-01-01 10:00:00'
+        },
+        {
+          menuId: 104,
+          menuName: '岗位管理',
+          parentId: 1,
+          orderNum: 5,
+          path: 'post',
+          component: 'system/post/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'system:post:list',
+          icon: 'post',
+          createTime: '2024-01-01 10:00:00'
+        },
+        {
+          menuId: 105,
+          menuName: '字典管理',
+          parentId: 1,
+          orderNum: 6,
+          path: 'dict',
+          component: 'system/dict/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'system:dict:list',
+          icon: 'dict',
+          createTime: '2024-01-01 10:00:00'
+        },
+        {
+          menuId: 106,
+          menuName: '参数设置',
+          parentId: 1,
+          orderNum: 7,
+          path: 'config',
+          component: 'system/config/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'system:config:list',
+          icon: 'edit',
+          createTime: '2024-01-01 10:00:00'
+        }
+      ]
+    },
+    {
+      menuId: 2,
+      menuName: '系统监控',
+      parentId: 0,
+      orderNum: 2,
+      path: '/monitor',
+      component: 'Layout',
+      menuType: 'M',
+      visible: '0',
+      status: '0',
+      perms: '',
+      icon: 'monitor',
+      createTime: '2024-01-01 10:00:00',
+      children: [
+        {
+          menuId: 200,
+          menuName: '在线用户',
+          parentId: 2,
+          orderNum: 1,
+          path: 'online',
+          component: 'monitor/online/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'monitor:online:list',
+          icon: 'online',
+          createTime: '2024-01-01 10:00:00'
+        },
+        {
+          menuId: 201,
+          menuName: '定时任务',
+          parentId: 2,
+          orderNum: 2,
+          path: 'job',
+          component: 'monitor/job/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'monitor:job:list',
+          icon: 'job',
+          createTime: '2024-01-01 10:00:00'
+        }
+      ]
+    },
+    {
+      menuId: 3,
+      menuName: '系统工具',
+      parentId: 0,
+      orderNum: 3,
+      path: '/tool',
+      component: 'Layout',
+      menuType: 'M',
+      visible: '0',
+      status: '0',
+      perms: '',
+      icon: 'tool',
+      createTime: '2024-01-01 10:00:00',
+      children: [
+        {
+          menuId: 300,
+          menuName: '表单构建',
+          parentId: 3,
+          orderNum: 1,
+          path: 'build',
+          component: 'tool/build/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'tool:build:list',
+          icon: 'build',
+          createTime: '2024-01-01 10:00:00'
+        },
+        {
+          menuId: 301,
+          menuName: '代码生成',
+          parentId: 3,
+          orderNum: 2,
+          path: 'gen',
+          component: 'tool/gen/index',
+          menuType: 'C',
+          visible: '0',
+          status: '0',
+          perms: 'tool:gen:list',
+          icon: 'code',
+          createTime: '2024-01-01 10:00:00'
+        }
+      ]
+    }
+  ];
+  
+  res.json({
+    code: 200,
+    msg: '查询成功',
+    data: mockMenus
+  });
+});
+
+// 模拟系统菜单详情API
+app.get('/api/user-center/system/menu/:menuId', (req, res) => {
+  const menuId = parseInt(req.params.menuId);
+  
+  // 根据menuId返回对应的菜单详情
+  const menuDetail = {
+    menuId: menuId,
+    menuName: '菜单名称',
+    parentId: 0,
+    orderNum: 1,
+    path: '/example',
+    component: 'Layout',
+    menuType: 'M',
+    visible: '0',
+    status: '0',
+    perms: '',
+    icon: 'system',
+    createTime: '2024-01-01 10:00:00'
+  };
+  
+  res.json({
+    code: 200,
+    msg: '查询成功',
+    data: menuDetail
+  });
+});
+
+// 模拟菜单下拉树结构API
+app.get('/api/user-center/system/menu/treeselect', (req, res) => {
+  const treeData = [
+    {
+      id: 1,
+      label: '系统管理',
+      children: [
+        { id: 100, label: '用户管理' },
+        { id: 101, label: '角色管理' },
+        { id: 102, label: '菜单管理' },
+        { id: 103, label: '部门管理' },
+        { id: 104, label: '岗位管理' },
+        { id: 105, label: '字典管理' },
+        { id: 106, label: '参数设置' }
+      ]
+    },
+    {
+      id: 2,
+      label: '系统监控',
+      children: [
+        { id: 200, label: '在线用户' },
+        { id: 201, label: '定时任务' }
+      ]
+    },
+    {
+      id: 3,
+      label: '系统工具',
+      children: [
+        { id: 300, label: '表单构建' },
+        { id: 301, label: '代码生成' }
+      ]
+    }
+  ];
+  
+  res.json({
+    code: 200,
+    msg: '查询成功',
+    data: treeData
+  });
+});
+
+// 模拟根据角色ID查询菜单下拉树结构API
+app.get('/api/user-center/system/menu/roleMenuTreeselect/:roleId', (req, res) => {
+  const roleId = req.params.roleId;
+  
+  const result = {
+    checkedKeys: [100, 101, 102], // 已选中的菜单ID
+    menus: [
+      {
+        id: 1,
+        label: '系统管理',
+        children: [
+          { id: 100, label: '用户管理' },
+          { id: 101, label: '角色管理' },
+          { id: 102, label: '菜单管理' }
+        ]
+      }
+    ]
+  };
+  
+  res.json({
+    code: 200,
+    msg: '查询成功',
+    data: result
+  });
+});
+
+// 模拟新增菜单API
+app.post('/api/user-center/system/menu', (req, res) => {
+  res.json({
+    code: 200,
+    msg: '新增成功'
+  });
+});
+
+// 模拟修改菜单API
+app.put('/api/user-center/system/menu', (req, res) => {
+  res.json({
+    code: 200,
+    msg: '修改成功'
+  });
+});
+
+// 模拟删除菜单API
+app.delete('/api/user-center/system/menu/:menuId', (req, res) => {
+  res.json({
+    code: 200,
+    msg: '删除成功'
+  });
+});
+
 // 模拟角色列表API
 app.get('/api/user-center/system/role/list', (req, res) => {
   const { pageNum = 1, pageSize = 10 } = req.query;
@@ -657,6 +990,9 @@ app.get('/api/system/status', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Test User Center Service started on port ${PORT}`);
   console.log(`📋 Health check: http://localhost:${PORT}/health`);
+  console.log(`📋 System Menu List API: http://localhost:${PORT}/api/user-center/system/menu/list`);
+  console.log(`📄 System Menu Detail API: http://localhost:${PORT}/api/user-center/system/menu/:menuId`);
+  console.log(`🌳 System Menu Tree API: http://localhost:${PORT}/api/user-center/system/menu/treeselect`);
   console.log(`🔧 Role API: http://localhost:${PORT}/api/user-center/system/role/list`);
   console.log(`👥 Fans API: http://localhost:${PORT}/api/wechat-official/api/fans`);
   console.log(`🏷️  Tags API: http://localhost:${PORT}/api/wechat-official/api/tags`);

@@ -297,8 +297,8 @@
 
 <script setup name="Menu">
 import { listMenu, getMenu, delMenu, addMenu, updateMenu } from '@/api/system/menu'
-import SvgIcon from '@/components/SvgIcon'
-import IconSelect from '@/components/IconSelect'
+import SvgIcon from '@/components/SvgIcon/index.vue'
+import IconSelect from '@/components/IconSelect/index.vue'
 import { parseTime } from '@/utils/index'
 
 const { proxy } = getCurrentInstance()

@@ -14,6 +14,9 @@ import DictTag from '@/components/DictTag/index.vue'
 // 全局指令
 import directives from '@/directives'
 
+// 字典工具
+import { useDict } from '@/utils/dict'
+
 // 进度条
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -38,6 +41,9 @@ app.component('dict-tag', DictTag)
 
 // 注册全局指令
 app.use(directives)
+
+// 添加全局属性
+app.config.globalProperties.useDict = useDict
 
 app.use(pinia)
 app.use(router)
