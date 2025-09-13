@@ -154,6 +154,7 @@ Redis 服务器（多实例）	2 核 4G，50GB 存储	Redis 6.x（按服务创�
 监控 / 日志服务器	2 核 4G，100GB 存储（日志存储需求高）	Prometheus、Grafana、ELK Stack（Elasticsearch+Logstash+Kibana）
 CI/CD 服务器	2 核 4G，50GB 存储	Jenkins（自动化构建、部署）
 7.3 分模块部署步骤
+7.3 分模块部署步骤
 7.3.1 基础设施部署（前置条件）
 操作系统准备
 所有服务器统一安装 CentOS 7.x 或 Ubuntu 20.04 LTS，配置静态 IP、关闭防火墙不必要端口（仅开放 80/443/3306/6379 等必要端口），配置 SSH 密钥登录。
