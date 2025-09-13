@@ -306,6 +306,42 @@ export const asyncRoutes = [
         }
       },
       {
+        path: 'menu',
+        name: 'SystemMenu',
+        component: () => import('@/views/system/menu/index.vue'),
+        meta: {
+          title: '菜单管理',
+          icon: 'Menu'
+        }
+      },
+      {
+        path: 'role',
+        name: 'SystemRole',
+        component: () => import('@/views/system/role/index.vue'),
+        meta: {
+          title: '角色管理',
+          icon: 'UserFilled'
+        }
+      },
+      {
+        path: 'user',
+        name: 'SystemUser',
+        component: () => import('@/views/system/user/index.vue'),
+        meta: {
+          title: '用户管理',
+          icon: 'User'
+        }
+      },
+      {
+        path: 'config',
+        name: 'SystemConfig',
+        component: () => import('@/views/system/config/index.vue'),
+        meta: {
+          title: '系统配置',
+          icon: 'Setting'
+        }
+      },
+      {
         path: 'logs',
         name: 'SystemLogs',
         component: () => import('@/views/system/logs.vue'),

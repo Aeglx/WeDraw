@@ -10,6 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  background-color: #f0f2f5;
 }
 
 label {
@@ -46,6 +47,49 @@ a:hover {
 
 div:focus {
   outline: none;
+}
+
+.app-container {
+  padding: 20px;
+  background-color: #fff;
+  margin: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+}
+
+.filter-container {
+  padding-bottom: 10px;
+
+  .filter-item {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10px;
+  }
+}
+
+// 通用按钮样式
+.mb8 {
+  margin-bottom: 8px;
+}
+
+// 表格样式优化
+.el-table {
+  .el-table__header-wrapper {
+    th {
+      background-color: #fafafa;
+    }
+  }
+}
+
+// 卡片样式
+.el-card {
+  border-radius: 4px;
+  border: 1px solid #ebeef5;
+  background-color: #fff;
+  overflow: hidden;
+  color: #303133;
+  transition: 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 }
 
 .clearfix {

@@ -163,37 +163,70 @@ onMounted(() => {
 <style lang="scss" scoped>
 .dashboard-container {
   padding: 20px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 50px);
 }
 
 .dashboard-text {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 32px;
+  line-height: 46px;
   color: #303133;
+  font-weight: 600;
   margin-bottom: 30px;
   text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .stats-row {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .stats-card {
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+  
   .stats-content {
     display: flex;
     align-items: center;
-    padding: 10px 0;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(30px, -30px);
+    }
     
     .stats-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-right: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       
       .el-icon {
-        font-size: 24px;
+        font-size: 28px;
         color: #fff;
       }
       
@@ -216,36 +249,40 @@ onMounted(() => {
     
     .stats-info {
       flex: 1;
+      z-index: 1;
       
       .stats-number {
-        font-size: 28px;
-        font-weight: bold;
+        font-size: 32px;
+        font-weight: 700;
         color: #303133;
         line-height: 1;
+        margin-bottom: 8px;
       }
       
       .stats-label {
-        font-size: 14px;
+        font-size: 15px;
         color: #909399;
-        margin-top: 5px;
+        font-weight: 500;
       }
     }
   }
 }
 
 .chart-row {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .chart-container {
-  height: 300px;
+  height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f7fa;
-  border-radius: 4px;
-  color: #909399;
-  font-size: 14px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 16px;
+  font-weight: 500;
+  border: 2px dashed #dee2e6;
 }
 
 .action-row {
@@ -258,6 +295,15 @@ onMounted(() => {
       display: flex;
       align-items: center;
       gap: 5px;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
     }
   }
 }
@@ -266,10 +312,51 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 18px;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+  }
+}
+
+:deep(.el-card) {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #ebeef5;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+  
+  .el-card__header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .el-card__body {
+    padding: 24px;
+  }
 }
 
 @media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
+  }
+  
+  .dashboard-text {
+    font-size: 24px;
+  }
+  
   .stats-row {
     .el-col {
       margin-bottom: 15px;
@@ -284,6 +371,28 @@ onMounted(() => {
   
   .action-buttons {
     justify-content: center;
+    
+    .el-button {
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+  }
+  
+  .stats-card .stats-content {
+    padding: 20px;
+    
+    .stats-icon {
+      width: 56px;
+      height: 56px;
+      
+      .el-icon {
+        font-size: 24px;
+      }
+    }
+    
+    .stats-info .stats-number {
+      font-size: 28px;
+    }
   }
 }
 </style>

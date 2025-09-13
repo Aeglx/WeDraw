@@ -10,7 +10,8 @@ export const useUserStore = defineStore('user', {
     avatar: '',
     email: '',
     roles: [],
-    permissions: []
+    permissions: [],
+    routes: []
   }),
 
   getters: {
@@ -137,6 +138,7 @@ export const useUserStore = defineStore('user', {
       this.email = ''
       this.roles = []
       this.permissions = []
+      this.routes = []
       removeToken()
     },
 
@@ -149,8 +151,14 @@ export const useUserStore = defineStore('user', {
         } else {
           accessedRoutes = filterAsyncRoutes(asyncRoutes, this.roles)
         }
+        this.routes = accessedRoutes
         resolve(accessedRoutes)
       })
+    },
+
+    // 设置路由
+    setRoutes(routes) {
+      this.routes = routes
     }
   }
 })
