@@ -40,7 +40,7 @@
 
     &.has-logo {
       .el-scrollbar {
-        height: calc(100% - 50px);
+        height: calc(100% - 60px);
       }
     }
 
@@ -141,14 +141,37 @@
 
     & .nest-menu .el-submenu > .el-submenu__title,
     & .el-submenu .el-menu-item {
-      min-height: 50px !important;
+      min-height: 48px !important;
       background-color: $subMenuBg !important;
       color: $menuText !important;
-      transition: all 0.2s ease-in-out !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      margin: 2px 12px 2px 20px;
+      border-radius: 6px;
+      position: relative;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        left: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2px;
+        height: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 1px;
+        transition: all 0.3s ease;
+      }
 
       &:hover {
         background-color: $subMenuHover !important;
         color: #ffffff !important;
+        transform: translateX(4px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        
+        &::before {
+          background: rgba(255, 255, 255, 0.6);
+          height: 20px;
+        }
         
         .svg-icon,
         .sub-el-icon {
@@ -160,42 +183,57 @@
 
   .hideSidebar {
     .sidebar-container {
-      width: 54px !important;
+      width: 64px !important;
+      box-shadow: 2px 0 12px rgba(0, 0, 0, 0.2);
     }
 
     .main-container {
-      margin-left: 54px;
+      margin-left: 64px;
     }
 
     .submenu-title-noDropdown {
       padding: 0 !important;
       position: relative;
+      margin: 4px 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       .el-tooltip {
         padding: 0 !important;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         .svg-icon {
-          margin-left: 20px;
+          margin: 0;
         }
 
         .sub-el-icon {
-          margin-left: 19px;
+          margin: 0;
         }
       }
     }
 
     .el-submenu {
       overflow: hidden;
+      margin: 4px 8px;
+      border-radius: 8px;
 
       &>.el-submenu__title {
         padding: 0 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         .svg-icon {
-          margin-left: 20px;
+          margin: 0;
         }
 
         .sub-el-icon {
-          margin-left: 19px;
+          margin: 0;
         }
 
         .el-submenu__icon-arrow {

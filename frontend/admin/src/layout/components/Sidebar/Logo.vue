@@ -32,44 +32,59 @@ const logo = null // 暂时不使用logo图片，显示文字标题
 
 <style lang="scss" scoped>
 .sidebarLogoFade-enter-active {
-  transition: opacity 1.5s;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebarLogoFade-enter,
 .sidebarLogoFade-leave-to {
   opacity: 0;
+  transform: translateY(-10px);
 }
 
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
-  background: #2b2f3a;
+  height: 60px;
+  line-height: 60px;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   text-align: center;
   overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   & .sidebar-logo-link {
-    height: 100%;
+    display: inline-block;
     width: 100%;
-
-    & .sidebar-logo {
-      width: 32px;
-      height: 32px;
-      vertical-align: middle;
-      margin-right: 12px;
+    height: 60px;
+    line-height: 60px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.02);
     }
+  }
 
-    & .sidebar-title {
-      display: inline-block;
-      margin: 0;
-      color: #fff;
-      font-weight: 600;
-      line-height: 50px;
-      font-size: 14px;
-      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
-      vertical-align: middle;
-    }
+  & .sidebar-logo {
+    width: 36px;
+    height: 36px;
+    vertical-align: middle;
+    margin-right: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  & .sidebar-title {
+    display: inline-block;
+    margin: 0;
+    color: #ffffff;
+    font-weight: 700;
+    line-height: 60px;
+    font-size: 16px;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   &.collapse {

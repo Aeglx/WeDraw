@@ -36,8 +36,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="small" @click="resetQuery">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -49,7 +49,7 @@
             type="primary"
             plain
             icon="el-icon-refresh"
-            size="mini"
+            size="small"
             @click="handleSync"
             v-hasPermi="['wechat:fans:sync']"
           >同步粉丝</el-button>
@@ -59,7 +59,7 @@
             type="success"
             plain
             icon="el-icon-download"
-            size="mini"
+            size="small"
             @click="handleExport"
             v-hasPermi="['wechat:fans:export']"
           >导出</el-button>
@@ -69,7 +69,7 @@
             type="warning"
             plain
             icon="el-icon-price-tag"
-            size="mini"
+            size="small"
             @click="handleBatchTag"
             :disabled="multiple"
             v-hasPermi="['wechat:fans:tag']"
@@ -82,41 +82,41 @@
       <el-table v-loading="loading" :data="fanList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="头像" align="center" prop="avatar" width="80">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-avatar :size="40" :src="scope.row.avatar" icon="el-icon-user-solid"></el-avatar>
           </template>
         </el-table-column>
         <el-table-column label="昵称" align="center" prop="nickname" :show-overflow-tooltip="true" />
         <el-table-column label="性别" align="center" prop="gender" width="80">
-          <template slot-scope="scope">
+          <template #default="scope">
             <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.gender"/>
           </template>
         </el-table-column>
         <el-table-column label="地区" align="center" prop="location" width="120">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ formatLocation(scope.row) }}
           </template>
         </el-table-column>
         <el-table-column label="关注状态" align="center" prop="subscribe" width="100">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag :type="scope.row.subscribe ? 'success' : 'danger'">
               {{ scope.row.subscribe ? '已关注' : '未关注' }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center" prop="status" width="100">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag :type="getStatusType(scope.row.status)">
               {{ getStatusText(scope.row.status) }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="标签" align="center" prop="tags" width="150">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag
               v-for="tag in scope.row.tags"
               :key="tag.id"
-              size="mini"
+              size="small"
               :color="tag.color"
               class="mr5"
             >
@@ -125,22 +125,22 @@
           </template>
         </el-table-column>
         <el-table-column label="关注时间" align="center" prop="subscribe_time" width="180">
-          <template slot-scope="scope">
+          <template #default="scope">
             <span>{{ parseTime(scope.row.subscribe_time, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           </template>
         </el-table-column>
         <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-button
-              size="mini"
+              size="small"
               type="text"
               icon="el-icon-view"
               @click="handleView(scope.row)"
               v-hasPermi="['wechat:fans:query']"
             >详情</el-button>
             <el-button
-              size="mini"
+              size="small"
               type="text"
               icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
@@ -148,7 +148,7 @@
             >编辑</el-button>
             <el-button
               v-if="scope.row.status !== 'blocked'"
-              size="mini"
+              size="small"
               type="text"
               icon="el-icon-remove-outline"
               @click="handleBlock(scope.row)"
@@ -156,7 +156,7 @@
             >拉黑</el-button>
             <el-button
               v-else
-              size="mini"
+              size="small"
               type="text"
               icon="el-icon-circle-check"
               @click="handleUnblock(scope.row)"

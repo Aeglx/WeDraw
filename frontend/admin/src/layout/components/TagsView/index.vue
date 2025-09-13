@@ -116,10 +116,12 @@ function addTags() {
 function moveToCurrentTag() {
   const tags = document.querySelectorAll('.tags-view-item')
   nextTick(() => {
-    for (const tag of tags) {
-      if (tag.to.path === route.path) {
+    for (let i = 0; i < tags.length; i++) {
+      const tag = tags[i]
+      const view = visitedViews.value[i]
+      if (view && view.path === route.path) {
         scrollPane.value.moveToTarget(tag)
-        if (tag.to.fullPath !== route.fullPath) {
+        if (view.fullPath !== route.fullPath) {
           tagsViewStore.updateVisitedView(route)
         }
         break
