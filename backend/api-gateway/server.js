@@ -7,23 +7,27 @@ const rateLimit = require('express-rate-limit');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 require('dotenv').config();
 
+// 导入自定义模块
 const logger = require('./src/utils/logger');
 const redisClient = require('./src/config/redis');
 const authMiddleware = require('./src/middleware/auth');
 const errorHandler = require('./src/middleware/errorHandler');
 const routes = require('./src/routes');
+const { globalLimiter } = require('./src/middleware/rateLimiter');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 基础中间件
-app.use(helmet());
-app.use(compression());
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  methods: process.env.CORS_METHODS || 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: process.env.CORS_ALLOWED_HEADERS || 'Content-Type,Authorization'
-}));
+// 信任代理（用于获取真实IP）
+app.set('trust proxy', 1);
+
+// 请求ID中间件
+app.use((req, res, next) => {
+  req.id = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  req.startTime = Date.now();
+  res.setHeader('X-Request-ID', req.id);
+  next();
+});
 
 // 请求日志
 app.use(morgan('combined', {
@@ -32,38 +36,97 @@ app.use(morgan('combined', {
   }
 }));
 
-// 请求解析
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// 限流中间件
-const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 60000,
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
-  message: {
-    error: 'Too many requests from this IP, please try again later.',
-    code: 'RATE_LIMIT_EXCEEDED'
+// 安全中间件
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https:"],
+      fontSrc: ["'self'", "https:"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
   },
-  standardHeaders: true,
-  legacyHeaders: false,
-  store: redisClient ? {
-    incr: async (key) => {
-      const result = await redisClient.incr(key);
-      if (result === 1) {
-        await redisClient.expire(key, Math.ceil((parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 60000) / 1000));
-      }
-      return result;
-    },
-    decrement: async (key) => {
-      return await redisClient.decr(key);
-    },
-    resetKey: async (key) => {
-      return await redisClient.del(key);
-    }
-  } : undefined
-});
+  crossOriginEmbedderPolicy: false
+}));
 
-app.use('/api', limiter);
+// CORS配置
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+      'http://localhost:3000',
+      'http://localhost:8080',
+      'http://localhost:8081'
+    ];
+    
+    // 允许没有origin的请求（如移动应用）
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'X-Request-ID',
+    'X-User-Agent'
+  ],
+  exposedHeaders: ['X-Request-ID', 'X-RateLimit-Limit', 'X-RateLimit-Remaining']
+};
+app.use(cors(corsOptions));
+
+// 压缩响应
+app.use(compression({
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    return compression.filter(req, res);
+  },
+  threshold: 1024 // 只压缩大于1KB的响应
+}));
+
+// 请求解析
+app.use(express.json({ 
+  limit: process.env.MAX_JSON_SIZE || '10mb',
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
+app.use(express.urlencoded({ 
+  extended: true, 
+  limit: process.env.MAX_FORM_SIZE || '10mb' 
+}));
+
+// 全局限流
+app.use(globalLimiter);
+
+// 响应时间中间件
+app.use((req, res, next) => {
+  res.on('finish', () => {
+    const duration = Date.now() - req.startTime;
+    logger.info('Request completed:', {
+      requestId: req.id,
+      method: req.method,
+      url: req.originalUrl,
+      statusCode: res.statusCode,
+      duration,
+      userAgent: req.get('User-Agent'),
+      ip: req.ip
+    });
+  });
+  next();
+});
 
 // 健康检查
 app.get('/health', async (req, res) => {
@@ -196,10 +259,63 @@ process.on('SIGINT', async () => {
 });
 
 // 启动服务器
-app.listen(PORT, () => {
-  logger.info(`API Gateway started on port ${PORT}`);
-  logger.info(`Environment: ${process.env.NODE_ENV}`);
-  logger.info(`Health check available at: http://localhost:${PORT}/health`);
+const server = app.listen(PORT, async () => {
+  logger.info(`🚀 API Gateway started on port ${PORT}`);
+  logger.info(`📋 Health check: http://localhost:${PORT}/health`);
+  logger.info(`📖 API docs: http://localhost:${PORT}/docs`);
+  logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // 连接Redis
+  try {
+    if (redisClient && typeof redisClient.connect === 'function') {
+      await redisClient.connect();
+    }
+    logger.info('✅ Redis connected successfully');
+  } catch (error) {
+    logger.warn('⚠️  Redis connection failed:', error.message);
+  }
+});
+
+// 优雅关闭
+const gracefulShutdown = (signal) => {
+  logger.info(`${signal} received, shutting down gracefully`);
+  
+  server.close(async () => {
+    logger.info('HTTP server closed');
+    
+    // 关闭Redis连接
+    try {
+      if (redisClient && typeof redisClient.quit === 'function') {
+        await redisClient.quit();
+      }
+      logger.info('Redis disconnected');
+    } catch (error) {
+      logger.error('Error disconnecting Redis:', error);
+    }
+    
+    logger.info('Process terminated');
+    process.exit(0);
+  });
+  
+  // 强制退出（如果10秒内没有正常关闭）
+  setTimeout(() => {
+    logger.error('Could not close connections in time, forcefully shutting down');
+    process.exit(1);
+  }, 10000);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// 处理未捕获的异常
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
 });
 
 module.exports = app;
