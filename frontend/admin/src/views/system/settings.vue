@@ -120,9 +120,9 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+            <el-button size="small" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
             <el-button
-              size="mini"
+              size="small"
               type="text"
               icon="el-icon-delete"
               @click="handleDelete(scope.row)"
@@ -244,8 +244,8 @@ export default {
     getList() {
       this.loading = true
       listConfig(this.queryParams).then(response => {
-        this.configList = response.rows
-        this.total = response.total
+        this.configList = response.data.rows || []
+        this.total = response.data.total || 0
         this.loading = false
       })
     },

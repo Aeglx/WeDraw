@@ -336,8 +336,8 @@ const dataScopeOptions = ref([
 function getList() {
   loading.value = true
   listRole(proxy.addDateRange(queryParams.value, dateRange.value)).then(response => {
-    roleList.value = response.rows
-    total.value = response.total
+    roleList.value = response.data.rows || []
+    total.value = response.data.total || 0
     loading.value = false
   })
 }

@@ -39,8 +39,8 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="small" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
@@ -374,7 +374,7 @@ export default {
         this.queryParams.endTime = null
       }
       listMessages(this.queryParams).then(response => {
-        this.messageList = response.data.list || []
+        this.messageList = response.data.rows || []
         this.total = response.data.total || 0
         this.loading = false
       })

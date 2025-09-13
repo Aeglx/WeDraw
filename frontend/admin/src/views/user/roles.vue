@@ -361,8 +361,8 @@ const getList = async () => {
       }
     }
     const response = await listRole(params)
-    roleList.value = response.rows
-    total.value = response.total
+    roleList.value = response.data.rows || []
+    total.value = response.data.total || 0
   } catch (error) {
     ElMessage.error('获取角色列表失败')
   } finally {

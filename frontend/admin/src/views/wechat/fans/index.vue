@@ -342,8 +342,8 @@ export default {
     getList() {
       this.loading = true
       listFans(this.queryParams).then(response => {
-        this.fanList = response.rows
-        this.total = response.total
+        this.fanList = response.data.rows || []
+        this.total = response.data.total || 0
         this.loading = false
       })
     },

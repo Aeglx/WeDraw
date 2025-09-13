@@ -165,6 +165,10 @@ const services = {
     target: process.env.USER_CENTER_URL || 'http://localhost:3001',
     pathRewrite: { '^/api/user': '' }
   },
+  '/api/user-center': {
+    target: process.env.USER_CENTER_URL || 'http://localhost:3002',
+    pathRewrite: { '^/api/user-center': '/api' }
+  },
   '/api/wechat': {
     target: process.env.WECHAT_OFFICIAL_URL || 'http://localhost:3002',
     pathRewrite: { '^/api/wechat': '' }
