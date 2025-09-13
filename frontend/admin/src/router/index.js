@@ -377,9 +377,7 @@ export const asyncRoutes = [
               icon: 'Connection'
             }
           }
-        ]
-        }
-      }
+        ]      }
     ]
   },
   {

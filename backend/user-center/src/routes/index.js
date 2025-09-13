@@ -5,6 +5,7 @@ const authRoutes = require('./authRoutes');
 const profileRoutes = require('./profileRoutes');
 const adminRoutes = require('./adminRoutes');
 const healthRoutes = require('./healthRoutes');
+const databaseRoutes = require('./databaseRoutes');
 const logger = require('../utils/logger');
 const { authenticate, optionalAuth } = require('../middleware/auth');
 
@@ -178,6 +179,11 @@ router.use('/profile', authenticate, profileRoutes);
  * 管理员路由（需要管理员权限）
  */
 router.use('/admin', authenticate, adminRoutes);
+
+/**
+ * 数据库管理路由（需要管理员权限）
+ */
+router.use('/database', authenticate, databaseRoutes);
 
 /**
  * API文档路由
