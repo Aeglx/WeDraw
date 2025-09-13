@@ -265,6 +265,7 @@
 <script setup name="Role">
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, deptTreeSelect, roleMenuTreeselect, roleDeptTreeselect } from '@/api/system/role'
 import { treeselect as menuTreeselect, roleMenuTreeselect as menuRoleTreeselect } from '@/api/system/menu'
+import { deptTreeSelect as userDeptTreeSelect } from '@/api/system/user'
 import { parseTime } from '@/utils/index'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination/index.vue'
@@ -542,7 +543,7 @@ function getMenuTreeselect() {
 
 /** 查询部门树结构 */
 function getDeptTreeselect() {
-  deptTreeSelect().then(response => {
+  userDeptTreeSelect().then(response => {
     deptOptions.value = response.data
   })
 }

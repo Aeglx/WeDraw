@@ -2,7 +2,8 @@ import permission from './permission'
 
 // 全局指令
 const directives = {
-  hasPermi: permission
+  hasPermi: permission,
+  permission: permission
 }
 
 export default {

@@ -45,6 +45,14 @@ app.use(directives)
 // 添加全局属性
 app.config.globalProperties.useDict = useDict
 
+// 导入并挂载 ruoyi 工具函数
+import { addDateRange, parseTime, resetForm, selectDictLabel, selectDictLabels } from '@/utils/ruoyi'
+app.config.globalProperties.addDateRange = addDateRange
+app.config.globalProperties.parseTime = parseTime
+app.config.globalProperties.resetForm = resetForm
+app.config.globalProperties.selectDictLabel = selectDictLabel
+app.config.globalProperties.selectDictLabels = selectDictLabels
+
 app.use(pinia)
 app.use(router)
 

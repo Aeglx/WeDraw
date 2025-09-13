@@ -345,6 +345,266 @@ app.delete('/api/user-center/system/menu/:menuId', (req, res) => {
   });
 });
 
+// 模拟用户列表API
+app.get('/api/user-center/system/user/list', (req, res) => {
+  const { pageNum = 1, pageSize = 10, userName, phonenumber, status, deptId } = req.query;
+  
+  // 模拟用户数据
+  const mockUsers = [
+    {
+      userId: 1,
+      userName: 'admin',
+      nickName: '管理员',
+      email: 'admin@example.com',
+      phonenumber: '15888888888',
+      sex: '1',
+      avatar: '',
+      status: '0',
+      delFlag: '0',
+      loginIp: '127.0.0.1',
+      loginDate: '2024-01-01 10:00:00',
+      createTime: '2024-01-01 10:00:00',
+      remark: '管理员',
+      dept: {
+        deptId: 103,
+        parentId: 101,
+        deptName: '研发部门',
+        orderNum: 1,
+        leader: '张三',
+        status: '0'
+      },
+      roles: [
+        {
+          roleId: 1,
+          roleName: '超级管理员',
+          roleKey: 'admin',
+          roleSort: 1,
+          dataScope: '1',
+          status: '0'
+        }
+      ]
+    },
+    {
+      userId: 2,
+      userName: 'test',
+      nickName: '测试用户',
+      email: 'test@example.com',
+      phonenumber: '15666666666',
+      sex: '0',
+      avatar: '',
+      status: '0',
+      delFlag: '0',
+      loginIp: '127.0.0.1',
+      loginDate: '2024-01-02 11:00:00',
+      createTime: '2024-01-02 11:00:00',
+      remark: '测试用户',
+      dept: {
+        deptId: 105,
+        parentId: 101,
+        deptName: '测试部门',
+        orderNum: 3,
+        leader: '李四',
+        status: '0'
+      },
+      roles: [
+        {
+          roleId: 2,
+          roleName: '普通角色',
+          roleKey: 'common',
+          roleSort: 2,
+          dataScope: '2',
+          status: '0'
+        }
+      ]
+    },
+    {
+      userId: 3,
+      userName: 'user1',
+      nickName: '用户1',
+      email: 'user1@example.com',
+      phonenumber: '15777777777',
+      sex: '1',
+      avatar: '',
+      status: '0',
+      delFlag: '0',
+      loginIp: '127.0.0.1',
+      loginDate: '2024-01-03 12:00:00',
+      createTime: '2024-01-03 12:00:00',
+      remark: '普通用户',
+      dept: {
+        deptId: 106,
+        parentId: 101,
+        deptName: '财务部门',
+        orderNum: 4,
+        leader: '王五',
+        status: '0'
+      },
+      roles: [
+        {
+          roleId: 2,
+          roleName: '普通角色',
+          roleKey: 'common',
+          roleSort: 2,
+          dataScope: '2',
+          status: '0'
+        }
+      ]
+    }
+  ];
+  
+  // 搜索过滤
+  let filteredUsers = mockUsers;
+  if (userName) {
+    filteredUsers = filteredUsers.filter(user => user.userName.includes(userName) || user.nickName.includes(userName));
+  }
+  if (phonenumber) {
+    filteredUsers = filteredUsers.filter(user => user.phonenumber.includes(phonenumber));
+  }
+  if (status !== undefined && status !== '') {
+    filteredUsers = filteredUsers.filter(user => user.status === status);
+  }
+  if (deptId) {
+    filteredUsers = filteredUsers.filter(user => user.dept.deptId == deptId);
+  }
+  
+  const total = filteredUsers.length;
+  const start = (pageNum - 1) * pageSize;
+  const end = start + parseInt(pageSize);
+  const rows = filteredUsers.slice(start, end);
+  
+  res.json({
+    code: 200,
+    msg: '查询成功',
+    data: {
+      rows: rows,
+      total: total
+    }
+  });
+});
+
+// 模拟用户详情API
+app.get('/api/user-center/system/user/:userId', (req, res) => {
+  const userId = parseInt(req.params.userId);
+  
+  const userDetail = {
+    userId: userId,
+    userName: 'testuser',
+    nickName: '测试用户',
+    email: 'test@example.com',
+    phonenumber: '15888888888',
+    sex: '1',
+    avatar: '',
+    status: '0',
+    delFlag: '0',
+    loginIp: '127.0.0.1',
+    loginDate: '2024-01-01 10:00:00',
+    createTime: '2024-01-01 10:00:00',
+    remark: '测试用户',
+    postIds: [1, 2],
+    roleIds: [2],
+    roles: [
+      {
+        roleId: 2,
+        roleName: '普通角色',
+        roleKey: 'common',
+        roleSort: 2,
+        dataScope: '2',
+        status: '0'
+      }
+    ],
+    posts: [
+      {
+        postId: 1,
+        postCode: 'ceo',
+        postName: '董事长',
+        postSort: 1,
+        status: '0'
+      }
+    ]
+  };
+  
+  res.json({
+    code: 200,
+    msg: '查询成功',
+    data: userDetail
+  });
+});
+
+// 模拟新增用户API
+app.post('/api/user-center/system/user', (req, res) => {
+  res.json({
+    code: 200,
+    msg: '新增成功'
+  });
+});
+
+// 模拟修改用户API
+app.put('/api/user-center/system/user', (req, res) => {
+  res.json({
+    code: 200,
+    msg: '修改成功'
+  });
+});
+
+// 模拟删除用户API
+app.delete('/api/user-center/system/user/:userId', (req, res) => {
+  res.json({
+    code: 200,
+    msg: '删除成功'
+  });
+});
+
+// 模拟重置密码API
+app.put('/api/user-center/system/user/resetPwd', (req, res) => {
+  res.json({
+    code: 200,
+    msg: '重置成功'
+  });
+});
+
+// 模拟修改用户状态API
+app.put('/api/user-center/system/user/changeStatus', (req, res) => {
+  res.json({
+    code: 200,
+    msg: '修改成功'
+  });
+});
+
+// 模拟用户部门树API
+app.get('/api/user-center/system/user/deptTree', (req, res) => {
+  // 模拟部门树数据
+  const mockDeptTree = [
+    {
+      id: 100,
+      label: '总公司',
+      children: [
+        {
+          id: 101,
+          label: '技术部',
+          children: [
+            { id: 103, label: '前端组' },
+            { id: 104, label: '后端组' }
+          ]
+        },
+        {
+          id: 102,
+          label: '市场部',
+          children: [
+            { id: 105, label: '销售组' },
+            { id: 106, label: '推广组' }
+          ]
+        }
+      ]
+    }
+  ];
+  
+  res.json({
+    code: 200,
+    msg: '查询成功',
+    data: mockDeptTree
+  });
+});
+
 // 模拟角色列表API
 app.get('/api/user-center/system/role/list', (req, res) => {
   const { pageNum = 1, pageSize = 10 } = req.query;
@@ -368,6 +628,46 @@ app.get('/api/user-center/system/role/list', (req, res) => {
       rows: rows,
       total: total
     }
+  });
+});
+
+// 模拟角色部门树API
+app.get('/api/system/role/deptTree/:roleId', (req, res) => {
+  const { roleId } = req.params;
+  
+  // 模拟部门树数据
+  const mockDeptTree = {
+    depts: [
+      {
+        id: 100,
+        label: '总公司',
+        children: [
+          {
+            id: 101,
+            label: '技术部',
+            children: [
+              { id: 103, label: '前端组' },
+              { id: 104, label: '后端组' }
+            ]
+          },
+          {
+            id: 102,
+            label: '市场部',
+            children: [
+              { id: 105, label: '销售组' },
+              { id: 106, label: '推广组' }
+            ]
+          }
+        ]
+      }
+    ],
+    checkedKeys: roleId === '1' ? [100, 101, 102] : [101] // 超级管理员有更多权限
+  };
+  
+  res.json({
+    code: 200,
+    msg: '查询成功',
+    data: mockDeptTree
   });
 });
 
@@ -990,6 +1290,8 @@ app.get('/api/system/status', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Test User Center Service started on port ${PORT}`);
   console.log(`📋 Health check: http://localhost:${PORT}/health`);
+  console.log(`👤 System User List API: http://localhost:${PORT}/api/user-center/system/user/list`);
+  console.log(`👥 System User Detail API: http://localhost:${PORT}/api/user-center/system/user/:userId`);
   console.log(`📋 System Menu List API: http://localhost:${PORT}/api/user-center/system/menu/list`);
   console.log(`📄 System Menu Detail API: http://localhost:${PORT}/api/user-center/system/menu/:menuId`);
   console.log(`🌳 System Menu Tree API: http://localhost:${PORT}/api/user-center/system/menu/treeselect`);
