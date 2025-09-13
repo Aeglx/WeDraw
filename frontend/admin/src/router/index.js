@@ -349,35 +349,37 @@ export const asyncRoutes = [
           title: '系统日志',
           icon: 'Document'
         }
+      }
+    ]
+  },
+  {
+    path: '/database',
+    component: Layout,
+    redirect: '/database/mysql',
+    meta: {
+      title: '数据库管理',
+      icon: 'Coin',
+      roles: ['admin']
+    },
+    children: [
+      {
+        path: 'mysql',
+        name: 'DatabaseMySQL',
+        component: () => import('@/views/system/database/mysql.vue'),
+        meta: {
+          title: 'MySQL管理',
+          icon: 'DataBoard'
+        }
       },
       {
-        path: 'database',
-        name: 'SystemDatabase',
-        redirect: '/system/database/mysql',
+        path: 'redis',
+        name: 'DatabaseRedis',
+        component: () => import('@/views/system/database/redis.vue'),
         meta: {
-          title: '数据库管理',
-          icon: 'Coin'
-        },
-        children: [
-          {
-            path: 'mysql',
-            name: 'DatabaseMySQL',
-            component: () => import('@/views/system/database/mysql.vue'),
-            meta: {
-              title: 'MySQL管理',
-              icon: 'DataBoard'
-            }
-          },
-          {
-            path: 'redis',
-            name: 'DatabaseRedis',
-            component: () => import('@/views/system/database/redis.vue'),
-            meta: {
-              title: 'Redis管理',
-              icon: 'Connection'
-            }
-          }
-        ]      }
+          title: 'Redis管理',
+          icon: 'Connection'
+        }
+      }
     ]
   },
   {

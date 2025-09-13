@@ -1230,6 +1230,118 @@ app.get('/api/system/info', (req, res) => {
   });
 });
 
+// 模拟仪表盘统计数据API
+app.get('/api/dashboard/stats', (req, res) => {
+  console.log('📊 Dashboard Stats API called');
+  
+  const stats = {
+    totalUsers: 1250,
+    activeUsers: 890,
+    totalOrders: 3420,
+    totalRevenue: 125600.50,
+    newUsersToday: 23,
+    ordersToday: 45,
+    revenueToday: 2340.80,
+    growthRate: {
+      users: 12.5,
+      orders: 8.3,
+      revenue: 15.2
+    },
+    topProducts: [
+      { name: '产品A', sales: 234, revenue: 12340 },
+      { name: '产品B', sales: 189, revenue: 9450 },
+      { name: '产品C', sales: 156, revenue: 7800 }
+    ]
+  };
+
+  res.json({
+    success: true,
+    data: stats,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 模拟用户增长数据API
+app.get('/api/dashboard/user-growth', (req, res) => {
+  console.log('📈 User Growth API called');
+  
+  const userGrowthData = [];
+  const today = new Date();
+  
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    
+    userGrowthData.push({
+      date: date.toISOString().split('T')[0],
+      newUsers: Math.floor(Math.random() * 50) + 10,
+      activeUsers: Math.floor(Math.random() * 200) + 100,
+      totalUsers: 1000 + (29 - i) * 8 + Math.floor(Math.random() * 20)
+    });
+  }
+
+  res.json({
+    success: true,
+    data: userGrowthData,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 模拟订单统计数据API
+app.get('/api/dashboard/order-stats', (req, res) => {
+  console.log('📦 Order Stats API called');
+  
+  const orderStats = {
+    daily: [],
+    monthly: [],
+    categories: [
+      { name: '数字绘画', orders: 450, revenue: 22500 },
+      { name: '插画设计', orders: 320, revenue: 16000 },
+      { name: '品牌设计', orders: 280, revenue: 14000 },
+      { name: '包装设计', orders: 190, revenue: 9500 },
+      { name: '其他', orders: 160, revenue: 8000 }
+    ],
+    status: {
+      pending: 45,
+      processing: 123,
+      completed: 2890,
+      cancelled: 67,
+      refunded: 23
+    }
+  };
+
+  // 生成最近7天的订单数据
+  const today = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    
+    orderStats.daily.push({
+      date: date.toISOString().split('T')[0],
+      orders: Math.floor(Math.random() * 100) + 20,
+      revenue: Math.floor(Math.random() * 5000) + 1000
+    });
+  }
+
+  // 生成最近12个月的订单数据
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date(today);
+    date.setMonth(date.getMonth() - i);
+    
+    orderStats.monthly.push({
+      month: date.toISOString().substring(0, 7),
+      orders: Math.floor(Math.random() * 500) + 200,
+      revenue: Math.floor(Math.random() * 25000) + 10000
+    });
+  }
+
+  res.json({
+    success: true,
+    data: orderStats,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // 模拟系统状态API
 app.get('/api/system/status', (req, res) => {
   console.log('🔍 System Status API called');
