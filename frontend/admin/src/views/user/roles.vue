@@ -149,6 +149,7 @@
 
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
+      <div v-loading="dialogLoading" element-loading-text="加载中...">
       <el-form ref="roleRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="form.roleName" placeholder="请输入角色名称" />
@@ -178,21 +179,27 @@
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
           <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
-          <el-tree
-            class="tree-border"
-            :data="menuOptions"
-            show-checkbox
-            ref="menuRef"
-            node-key="id"
-            :check-strictly="!form.menuCheckStrictly"
-            empty-text="加载中，请稍候"
-            :props="{ label: 'label', children: 'children' }"
-          ></el-tree>
+          <div class="tree-border" style="height: 300px; overflow: auto;">
+            <el-tree
+              :data="menuOptions"
+              show-checkbox
+              ref="menuRef"
+              node-key="id"
+              :check-strictly="!form.menuCheckStrictly"
+              empty-text="加载中，请稍候"
+              :props="{ label: 'label', children: 'children' }"
+              :render-after-expand="false"
+              :lazy="false"
+              :load="loadMenuNode"
+              :default-expanded-keys="expandedMenuKeys"
+            ></el-tree>
+          </div>
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
         </el-form-item>
       </el-form>
+      </div>
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -203,6 +210,7 @@
 
     <!-- 分配角色数据权限对话框 -->
     <el-dialog :title="title" v-model="openDataScope" width="500px" append-to-body>
+      <div v-loading="dialogLoading" element-loading-text="加载中...">
       <el-form :model="form" label-width="80px">
         <el-form-item label="角色名称">
           <el-input v-model="form.roleName" :disabled="true" />
@@ -224,18 +232,24 @@
           <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
           <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
           <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
-          <el-tree
-            class="tree-border"
-            :data="deptOptions"
-            show-checkbox
-            ref="deptRef"
-            node-key="id"
-            :check-strictly="!form.deptCheckStrictly"
-            empty-text="加载中，请稍候"
-            :props="{ label: 'label', children: 'children' }"
-          ></el-tree>
+          <div class="tree-border" style="height: 300px; overflow: auto;">
+            <el-tree
+              :data="deptOptions"
+              show-checkbox
+              ref="deptRef"
+              node-key="id"
+              :check-strictly="!form.deptCheckStrictly"
+              empty-text="加载中，请稍候"
+              :props="{ label: 'label', children: 'children' }"
+              :render-after-expand="false"
+              :lazy="false"
+              :load="loadDeptNode"
+              :default-expanded-keys="expandedDeptKeys"
+            ></el-tree>
+          </div>
         </el-form-item>
       </el-form>
+      </div>
       <template #footer>
         <div class="dialog-footer">
           <el-button type="primary" @click="submitDataScope">确 定</el-button>
@@ -261,6 +275,7 @@ import { parseTime } from '@/utils/ruoyi'
 
 // 响应式数据
 const loading = ref(true)
+const dialogLoading = ref(false)
 const ids = ref([])
 const single = ref(true)
 const multiple = ref(true)
@@ -277,6 +292,16 @@ const deptNodeAll = ref(false)
 const dateRange = ref([])
 const menuOptions = ref([])
 const deptOptions = ref([])
+
+// 缓存标识
+const menuDataLoaded = ref(false)
+const deptDataLoaded = ref(false)
+
+// 树形组件优化
+const expandedMenuKeys = ref([])
+const expandedDeptKeys = ref([])
+const loadMenuNode = ref(null)
+const loadDeptNode = ref(null)
 
 // 查询参数
 const queryParams = reactive({
@@ -368,11 +393,18 @@ const sortChange = (column) => {
   getList()
 }
 
-const handleAdd = () => {
+const handleAdd = async () => {
   reset()
-  getMenuTreeselect()
-  open.value = true
-  title.value = '添加角色'
+  dialogLoading.value = true
+  try {
+    await getMenuTreeselect()
+    open.value = true
+    title.value = '添加角色'
+  } catch (error) {
+    ElMessage.error('加载菜单数据失败')
+  } finally {
+    dialogLoading.value = false
+  }
 }
 
 const handleUpdate = async (row) => {
@@ -429,17 +461,30 @@ const handleStatusChange = async (row) => {
 
 const handleDataScope = async (row) => {
   reset()
-  const roleDept = await roleDeptTreeselect(row.roleId)
-  Object.assign(form, roleDept.role)
-  openDataScope.value = true
-  await nextTick()
-  let checkedKeys = roleDept.checkedKeys
-  checkedKeys.forEach((v) => {
-    nextTick(() => {
-      deptRef.value.setChecked(v, true, false)
+  dialogLoading.value = true
+  try {
+    // 并行加载部门树和角色部门数据
+    const [_, roleDeptResponse] = await Promise.all([
+      getDeptTreeselect(),
+      roleDeptTreeselect(row.roleId)
+    ])
+    
+    Object.assign(form, roleDeptResponse.role)
+    openDataScope.value = true
+    await nextTick()
+    
+    let checkedKeys = roleDeptResponse.checkedKeys
+    checkedKeys.forEach((v) => {
+      nextTick(() => {
+        deptRef.value.setChecked(v, true, false)
+      })
     })
-  })
-  title.value = '分配数据权限'
+    title.value = '分配数据权限'
+  } catch (error) {
+    ElMessage.error('加载数据权限失败')
+  } finally {
+    dialogLoading.value = false
+  }
 }
 
 const handleAuthUser = (row) => {
@@ -523,20 +568,34 @@ const reset = () => {
 }
 
 const getMenuTreeselect = async () => {
+  // 如果已经加载过菜单数据，直接返回
+  if (menuDataLoaded.value && menuOptions.value.length > 0) {
+    return Promise.resolve()
+  }
+  
   try {
     const response = await menuTreeselect()
     menuOptions.value = response.data
+    menuDataLoaded.value = true
   } catch (error) {
     ElMessage.error('获取菜单数据失败')
+    throw error
   }
 }
 
 const getDeptTreeselect = async () => {
+  // 如果已经加载过部门数据，直接返回
+  if (deptDataLoaded.value && deptOptions.value.length > 0) {
+    return Promise.resolve()
+  }
+  
   try {
     const response = await deptTreeSelect()
     deptOptions.value = response.data
+    deptDataLoaded.value = true
   } catch (error) {
     ElMessage.error('获取部门数据失败')
+    throw error
   }
 }
 
@@ -593,7 +652,6 @@ const dataScopeSelectChange = (value) => {
 // 生命周期
 onMounted(() => {
   getList()
-  getDeptTreeselect()
 })
 </script>
 
@@ -653,6 +711,24 @@ onMounted(() => {
   background: #ffffff none;
   border-radius: 4px;
   width: 100%;
+  position: relative;
+}
+
+/* 树形组件性能优化样式 */
+.tree-border :deep(.el-tree) {
+  /* 启用硬件加速 */
+  transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+.tree-border :deep(.el-tree-node) {
+  /* 优化节点渲染 */
+  contain: layout style paint;
+}
+
+.tree-border :deep(.el-tree-node__content) {
+  /* 减少重绘 */
+  backface-visibility: hidden;
 }
 
 .dialog-footer {
