@@ -31,8 +31,10 @@ app.get('/api/user-center/system/role/list', (req, res) => {
   res.json({
     code: 200,
     msg: '查询成功',
-    rows: rows,
-    total: total
+    data: {
+      rows: rows,
+      total: total
+    }
   });
 });
 
@@ -57,8 +59,10 @@ app.get('/api/wechat-official/api/fans', (req, res) => {
   res.json({
     code: 200,
     msg: '查询成功',
-    rows: rows,
-    total: total
+    data: {
+      rows: rows,
+      total: total
+    }
   });
 });
 
@@ -136,8 +140,10 @@ app.get('/api/wechat-official/api/menus', (req, res) => {
   res.json({
     code: 200,
     msg: '查询成功',
-    rows: rows,
-    total: total
+    data: {
+      rows: rows,
+      total: total
+    }
   });
 });
 
@@ -217,8 +223,10 @@ app.get('/api/wechat/message/list', (req, res) => {
   res.json({
     code: 200,
     msg: '查询成功',
-    rows: rows,
-    total: total
+    data: {
+      rows: rows,
+      total: total
+    }
   });
 });
 
@@ -518,8 +526,10 @@ app.get('/api/system/config/list', (req, res) => {
   res.json({
     code: 200,
     msg: '查询成功',
-    rows: rows,
-    total: total
+    data: {
+      rows: rows,
+      total: total
+    }
   });
 });
 
