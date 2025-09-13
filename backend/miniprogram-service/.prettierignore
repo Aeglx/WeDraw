@@ -1,0 +1,104 @@
+# 依赖
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# 构建输出
+dist/
+build/
+out/
+
+# 覆盖率报告
+coverage/
+.nyc_output/
+
+# 日志
+logs/
+*.log
+
+# 运行时数据
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# 缓存
+.cache/
+.parcel-cache/
+.jest-cache/
+
+# 环境变量
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 上传文件
+uploads/
+public/uploads/
+
+# 文档
+docs/
+*.md
+README*
+CHANGELOG*
+LICENSE*
+
+# 配置文件
+*.config.js
+*.conf.js
+.eslintrc*
+.babelrc*
+.editorconfig
+.gitignore
+.dockerignore
+
+# 数据库
+*.sqlite
+*.db
+*.sql
+
+# 证书
+*.pem
+*.key
+*.crt
+*.cert
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+*.temp
+
+# 锁文件
+*.lock
+
+# 其他
+.git/
+.svn/
+.hg/
