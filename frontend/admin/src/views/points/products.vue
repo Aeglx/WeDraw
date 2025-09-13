@@ -1,19 +1,97 @@
 <template>
-  <div class="app-container">
+  <div class="points-mall-products">
+    <!-- 页面头部 -->
+    <div class="page-header">
+      <div class="header-content">
+        <h1>积分商城 - 商品管理</h1>
+        <p>管理积分商城中的商品信息，包括商品的添加、编辑、删除和状态管理</p>
+      </div>
+      <div class="header-actions">
+        <el-button type="primary" @click="handleAdd">
+          <el-icon><Plus /></el-icon>
+          新增商品
+        </el-button>
+        <el-button @click="handleImport">
+          <el-icon><Upload /></el-icon>
+          导入商品
+        </el-button>
+        <el-button @click="handleExport">
+          <el-icon><Download /></el-icon>
+          导出商品
+        </el-button>
+      </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <el-row :gutter="20" class="stats-cards">
+      <el-col :span="6">
+        <el-card class="stat-card">
+          <div class="stat-icon" style="background: #e1f3ff; color: #409eff;">
+            <el-icon size="24"><Goods /></el-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ statistics.total || 0 }}</div>
+            <div class="stat-label">商品总数</div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card class="stat-card">
+          <div class="stat-icon" style="background: #e8f8f5; color: #67c23a;">
+            <el-icon size="24"><CircleCheck /></el-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ statistics.active || 0 }}</div>
+            <div class="stat-label">上架商品</div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card class="stat-card">
+          <div class="stat-icon" style="background: #fef0f0; color: #f56c6c;">
+            <el-icon size="24"><WarningFilled /></el-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ statistics.low_stock || 0 }}</div>
+            <div class="stat-label">库存预警</div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card class="stat-card">
+          <div class="stat-icon" style="background: #fdf6ec; color: #e6a23c;">
+            <el-icon size="24"><Star /></el-icon>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ statistics.featured || 0 }}</div>
+            <div class="stat-label">推荐商品</div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
     <!-- 搜索区域 -->
-    <el-card class="filter-container">
-      <el-form :inline="true" :model="queryParams" class="demo-form-inline">
-        <el-form-item label="商品名称">
+    <el-card class="search-card">
+      <el-form ref="searchFormRef" :model="searchForm" :inline="true">
+        <el-form-item label="商品名称" prop="name">
           <el-input
-            v-model="queryParams.name"
+            v-model="searchForm.name"
             placeholder="请输入商品名称"
             clearable
             style="width: 200px"
           />
         </el-form-item>
-        <el-form-item label="商品分类">
+        <el-form-item label="商品SKU" prop="sku">
+          <el-input
+            v-model="searchForm.sku"
+            placeholder="请输入商品SKU"
+            clearable
+            style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="商品分类" prop="category_id">
           <el-select
-            v-model="queryParams.categoryId"
+            v-model="searchForm.category_id"
             placeholder="请选择分类"
             clearable
             style="width: 200px"
@@ -26,132 +104,160 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="商品状态">
+        <el-form-item label="商品状态" prop="status">
           <el-select
-            v-model="queryParams.status"
+            v-model="searchForm.status"
             placeholder="请选择状态"
             clearable
             style="width: 150px"
           >
-            <el-option label="上架" value="1" />
-            <el-option label="下架" value="0" />
+            <el-option label="上架" value="active" />
+            <el-option label="下架" value="inactive" />
+            <el-option label="售罄" value="sold_out" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+          <el-button type="primary" @click="handleSearch">
+            <el-icon><Search /></el-icon>
+            搜索
+          </el-button>
+          <el-button @click="resetSearchForm">
+            <el-icon><Refresh /></el-icon>
+            重置
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
-    <!-- 操作区域 -->
-    <el-card class="operate-container">
-      <div class="operate-buttons">
-        <el-button type="primary" icon="el-icon-plus" @click="handleAdd">新增商品</el-button>
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          :disabled="multiple"
-          @click="handleDelete"
-        >删除</el-button>
-        <el-button type="info" icon="el-icon-upload2" @click="handleImport">导入</el-button>
-        <el-button type="warning" icon="el-icon-download" @click="handleExport">导出</el-button>
-      </div>
-    </el-card>
-
     <!-- 商品列表 -->
-    <el-card class="table-container">
+    <el-card class="table-card">
       <el-table
         v-loading="loading"
         :data="productList"
         @selection-change="handleSelectionChange"
-        @sort-change="handleSortChange"
+        style="width: 100%"
       >
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="商品图片" align="center" width="100">
-          <template slot-scope="scope">
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="商品图片" width="100">
+          <template #default="{ row }">
             <el-image
-              style="width: 60px; height: 60px"
-              :src="scope.row.image"
-              :preview-src-list="[scope.row.image]"
+              v-if="row.image"
+              :src="row.image"
+              :preview-src-list="[row.image]"
+              style="width: 60px; height: 60px; border-radius: 4px;"
               fit="cover"
             >
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline"></i>
-              </div>
+              <template #error>
+                <div class="image-slot">
+                  <el-icon><Picture /></el-icon>
+                </div>
+              </template>
             </el-image>
+            <div v-else class="image-slot">
+              <el-icon><Picture /></el-icon>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="商品名称" prop="name" :show-overflow-tooltip="true" />
-        <el-table-column label="分类" prop="categoryName" width="120" />
-        <el-table-column label="积分价格" prop="points" width="100" sortable="custom">
-          <template slot-scope="scope">
-            <span class="points-price">{{ scope.row.points }}积分</span>
+        <el-table-column prop="name" label="商品名称" min-width="150" show-overflow-tooltip />
+        <el-table-column prop="sku" label="商品SKU" width="120" />
+        <el-table-column label="分类" width="120">
+          <template #default="{ row }">
+            {{ getCategoryName(row.category_id) }}
           </template>
         </el-table-column>
-        <el-table-column label="库存" prop="stock" width="80" sortable="custom">
-          <template slot-scope="scope">
-            <el-tag :type="scope.row.stock > 10 ? 'success' : scope.row.stock > 0 ? 'warning' : 'danger'">
-              {{ scope.row.stock }}
+        <el-table-column label="积分价格" width="100">
+          <template #default="{ row }">
+            <span class="points-price">{{ row.points }}积分</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="现金价格" width="100">
+          <template #default="{ row }">
+            <span v-if="row.cash_price > 0">¥{{ row.cash_price }}</span>
+            <span v-else class="text-muted">-</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="stock" label="库存" width="80">
+          <template #default="{ row }">
+            <el-tag v-if="row.stock <= row.low_stock_threshold" type="danger" size="small">
+              {{ row.stock }}
+            </el-tag>
+            <span v-else>{{ row.stock }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="100">
+          <template #default="{ row }">
+            <el-tag :type="getStatusType(row.status)" size="small">
+              {{ getStatusText(row.status) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="销量" prop="salesCount" width="80" sortable="custom" />
-        <el-table-column label="状态" prop="status" width="80">
-          <template slot-scope="scope">
+        <el-table-column label="是否推荐" width="100">
+          <template #default="{ row }">
             <el-switch
-              v-model="scope.row.status"
-              :active-value="1"
-              :inactive-value="0"
-              @change="handleStatusChange(scope.row)"
+              v-model="row.is_featured"
+              @change="handleFeaturedChange(row)"
             />
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" prop="createTime" width="160" sortable="custom" />
-        <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button size="mini" type="text" icon="el-icon-view" @click="handleView(scope.row)">查看</el-button>
-            <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-            <el-button size="mini" type="text" icon="el-icon-copy-document" @click="handleCopy(scope.row)">复制</el-button>
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              style="color: #f56c6c"
-              @click="handleDelete(scope.row)"
-            >删除</el-button>
+        <el-table-column prop="created_at" label="创建时间" width="160" />
+        <el-table-column label="操作" width="200" fixed="right">
+          <template #default="{ row }">
+            <el-button type="primary" link size="small" @click="handleView(row)">
+              查看
+            </el-button>
+            <el-button type="primary" link size="small" @click="handleEdit(row)">
+              编辑
+            </el-button>
+            <el-button type="primary" link size="small" @click="handleCopy(row)">
+              复制
+            </el-button>
+            <el-button type="danger" link size="small" @click="handleDelete(row)">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页 -->
-      <pagination
-        v-show="total > 0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        @pagination="getList"
-      />
+      <div class="pagination-container">
+        <Pagination
+          v-model:page="pagination.page"
+          v-model:limit="pagination.limit"
+          :total="pagination.total"
+          @pagination="fetchProductList"
+        />
+      </div>
     </el-card>
 
-    <!-- 添加或修改商品对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-row>
+    <!-- 添加/修改商品对话框 -->
+    <el-dialog
+      v-model="dialogVisible"
+      :title="isEdit ? '编辑商品' : '新增商品'"
+      width="800px"
+      @close="handleDialogClose"
+    >
+      <el-form
+        ref="productFormRef"
+        :model="productForm"
+        :rules="productRules"
+        label-width="100px"
+      >
+        <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="商品名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入商品名称" />
+              <el-input v-model="productForm.name" placeholder="请输入商品名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="商品分类" prop="categoryId">
-              <el-select v-model="form.categoryId" placeholder="请选择分类" style="width: 100%">
+            <el-form-item label="商品SKU" prop="sku">
+              <el-input v-model="productForm.sku" placeholder="请输入商品SKU" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="商品分类" prop="category_id">
+              <el-select v-model="productForm.category_id" placeholder="请选择分类" style="width: 100%">
                 <el-option
                   v-for="category in categoryList"
                   :key="category.id"
@@ -161,408 +267,636 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="12">
+            <el-form-item label="商品状态" prop="status">
+              <el-select v-model="productForm.status" placeholder="请选择状态" style="width: 100%">
+                <el-option label="上架" value="active" />
+                <el-option label="下架" value="inactive" />
+                <el-option label="售罄" value="sold_out" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
             <el-form-item label="积分价格" prop="points">
               <el-input-number
-                v-model="form.points"
-                :min="1"
-                :max="999999"
-                controls-position="right"
+                v-model="productForm.points"
+                :min="0"
+                :precision="0"
                 style="width: 100%"
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
+            <el-form-item label="现金价格" prop="cash_price">
+              <el-input-number
+                v-model="productForm.cash_price"
+                :min="0"
+                :precision="2"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="库存数量" prop="stock">
               <el-input-number
-                v-model="form.stock"
+                v-model="productForm.stock"
                 :min="0"
-                :max="999999"
-                controls-position="right"
+                :precision="0"
                 style="width: 100%"
               />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="商品图片" prop="image">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="库存预警" prop="low_stock_threshold">
+              <el-input-number
+                v-model="productForm.low_stock_threshold"
+                :min="0"
+                :precision="0"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否推荐">
+              <el-switch v-model="productForm.is_featured" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="商品图片">
           <el-upload
             class="upload-demo"
             action="#"
+            :http-request="handleImageUpload"
+            :before-upload="beforeImageUpload"
             :show-file-list="false"
-            :before-upload="beforeUpload"
-            :http-request="handleUpload"
           >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB</div>
+            <el-button type="primary">点击上传</el-button>
+            <template #tip>
+              <div class="el-upload__tip">
+                只能上传jpg/png文件，且不超过2MB
+              </div>
+            </template>
           </el-upload>
-          <div v-if="form.image" class="image-preview">
+          <div v-if="productForm.image" class="image-preview">
             <el-image
-              style="width: 100px; height: 100px"
-              :src="form.image"
+              :src="productForm.image"
+              style="width: 100px; height: 100px; border-radius: 4px;"
               fit="cover"
             />
           </div>
         </el-form-item>
-        <el-form-item label="商品描述" prop="description">
+        <el-form-item label="商品描述">
           <el-input
-            v-model="form.description"
+            v-model="productForm.description"
             type="textarea"
-            :rows="4"
+            :rows="3"
             placeholder="请输入商品描述"
           />
         </el-form-item>
-        <el-form-item label="商品状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio :label="1">上架</el-radio>
-            <el-radio :label="0">下架</el-radio>
-          </el-radio-group>
+        <el-form-item label="商品详情">
+          <el-input
+            v-model="productForm.detail"
+            type="textarea"
+            :rows="5"
+            placeholder="请输入商品详情"
+          />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSubmit" :loading="submitting">
+            确定
+          </el-button>
+        </span>
+      </template>
     </el-dialog>
 
     <!-- 商品详情对话框 -->
-    <el-dialog title="商品详情" :visible.sync="detailOpen" width="600px" append-to-body>
-      <el-descriptions :column="2" border>
-        <el-descriptions-item label="商品名称">{{ detailData.name }}</el-descriptions-item>
-        <el-descriptions-item label="商品分类">{{ detailData.categoryName }}</el-descriptions-item>
-        <el-descriptions-item label="积分价格">{{ detailData.points }}积分</el-descriptions-item>
-        <el-descriptions-item label="库存数量">{{ detailData.stock }}</el-descriptions-item>
-        <el-descriptions-item label="销量">{{ detailData.salesCount }}</el-descriptions-item>
-        <el-descriptions-item label="状态">
-          <el-tag :type="detailData.status === 1 ? 'success' : 'danger'">
-            {{ detailData.status === 1 ? '上架' : '下架' }}
-          </el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="创建时间" :span="2">{{ detailData.createTime }}</el-descriptions-item>
-        <el-descriptions-item label="商品图片" :span="2">
+    <el-dialog v-model="detailVisible" title="商品详情" width="600px">
+      <div v-if="currentProduct" class="product-detail">
+        <el-descriptions :column="2" border>
+          <el-descriptions-item label="商品名称">{{ currentProduct.name }}</el-descriptions-item>
+          <el-descriptions-item label="商品SKU">{{ currentProduct.sku }}</el-descriptions-item>
+          <el-descriptions-item label="商品分类">{{ getCategoryName(currentProduct.category_id) }}</el-descriptions-item>
+          <el-descriptions-item label="商品状态">
+            <el-tag :type="getStatusType(currentProduct.status)" size="small">
+              {{ getStatusText(currentProduct.status) }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="积分价格">{{ currentProduct.points }}积分</el-descriptions-item>
+          <el-descriptions-item label="现金价格">
+            <span v-if="currentProduct.cash_price > 0">¥{{ currentProduct.cash_price }}</span>
+            <span v-else>-</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="库存数量">{{ currentProduct.stock }}</el-descriptions-item>
+          <el-descriptions-item label="库存预警">{{ currentProduct.low_stock_threshold }}</el-descriptions-item>
+          <el-descriptions-item label="是否推荐">
+            <el-tag :type="currentProduct.is_featured ? 'success' : 'info'" size="small">
+              {{ currentProduct.is_featured ? '是' : '否' }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="创建时间">{{ currentProduct.created_at }}</el-descriptions-item>
+        </el-descriptions>
+        <div v-if="currentProduct.image" class="product-image">
+          <h4>商品图片</h4>
           <el-image
-            v-if="detailData.image"
-            style="width: 200px; height: 200px"
-            :src="detailData.image"
-            :preview-src-list="[detailData.image]"
+            :src="currentProduct.image"
+            :preview-src-list="[currentProduct.image]"
+            style="width: 200px; height: 200px; border-radius: 4px;"
             fit="cover"
           />
-        </el-descriptions-item>
-        <el-descriptions-item label="商品描述" :span="2">{{ detailData.description }}</el-descriptions-item>
-      </el-descriptions>
+        </div>
+        <div v-if="currentProduct.description" class="product-description">
+          <h4>商品描述</h4>
+          <p>{{ currentProduct.description }}</p>
+        </div>
+        <div v-if="currentProduct.detail" class="product-detail-content">
+          <h4>商品详情</h4>
+          <div v-html="currentProduct.detail"></div>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {
-  getProductList,
-  getProductDetail,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  updateProductStatus,
-  batchDeleteProducts,
-  copyProduct,
-  getCategoryList,
-  exportProducts,
-  importProducts
-} from '@/api/points-mall/products'
+  Plus, Upload, Download, Search, Refresh, Goods, CircleCheck,
+  WarningFilled, Star, Picture
+} from '@element-plus/icons-vue'
 import Pagination from '@/components/Pagination/index.vue'
+import {
+  getProductList, getProductDetail, createProduct, updateProduct,
+  deleteProduct, batchDeleteProducts, updateProductStatus,
+  copyProduct, exportProducts, importProducts,
+  getCategoryList, getProductStatistics
+} from '@/api/points-mall/products'
 
-export default {
-  name: 'PointsProducts',
-  components: {
-    Pagination
-  },
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 商品表格数据
-      productList: [],
-      // 分类列表
-      categoryList: [],
-      // 弹出层标题
-      title: '',
-      // 是否显示弹出层
-      open: false,
-      // 是否显示详情弹出层
-      detailOpen: false,
-      // 详情数据
-      detailData: {},
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        name: null,
-        categoryId: null,
-        status: null,
-        orderByColumn: null,
-        isAsc: null
-      },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        name: [
-          { required: true, message: '商品名称不能为空', trigger: 'blur' }
-        ],
-        categoryId: [
-          { required: true, message: '商品分类不能为空', trigger: 'change' }
-        ],
-        points: [
-          { required: true, message: '积分价格不能为空', trigger: 'blur' }
-        ],
-        stock: [
-          { required: true, message: '库存数量不能为空', trigger: 'blur' }
-        ]
-      }
+// 响应式数据
+const loading = ref(false)
+const dialogVisible = ref(false)
+const detailVisible = ref(false)
+const isEdit = ref(false)
+const submitting = ref(false)
+const editingProduct = ref(null)
+const currentProduct = ref(null)
+const selectedProducts = ref([])
+
+// 表单引用
+const searchFormRef = ref()
+const productFormRef = ref()
+
+// 列表数据
+const productList = ref([])
+const categoryList = ref([])
+const statistics = ref({})
+
+// 分页
+const pagination = reactive({
+  page: 1,
+  limit: 10,
+  total: 0
+})
+
+// 搜索表单
+const searchForm = reactive({
+  name: '',
+  sku: '',
+  category_id: '',
+  status: ''
+})
+
+// 商品表单
+const productForm = reactive({
+  name: '',
+  sku: '',
+  category_id: '',
+  description: '',
+  points: 0,
+  cash_price: 0,
+  stock: 0,
+  low_stock_threshold: 10,
+  image: '',
+  status: 'active',
+  is_featured: false,
+  detail: ''
+})
+
+// 表单验证规则
+const productRules = {
+  name: [{ required: true, message: '请输入商品名称', trigger: 'blur' }],
+  sku: [{ required: true, message: '请输入商品SKU', trigger: 'blur' }],
+  category_id: [{ required: true, message: '请选择商品分类', trigger: 'change' }],
+  points: [{ required: true, message: '请输入积分价格', trigger: 'blur' }],
+  stock: [{ required: true, message: '请输入库存数量', trigger: 'blur' }]
+}
+
+// 获取商品列表
+const fetchProductList = async () => {
+  try {
+    loading.value = true
+    const params = {
+      page: pagination.page,
+      limit: pagination.limit,
+      ...searchForm
     }
-  },
-  created() {
-    this.getList()
-    this.getCategoryList()
-  },
-  methods: {
-    /** 查询商品列表 */
-    getList() {
-      this.loading = true
-      getProductList(this.queryParams).then(response => {
-        this.productList = response.data.list
-        this.total = response.data.total
-        this.loading = false
-      })
-    },
-    /** 查询分类列表 */
-    getCategoryList() {
-      getCategoryList().then(response => {
-        this.categoryList = response.data
-      })
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: null,
-        name: null,
-        categoryId: null,
-        points: null,
-        stock: null,
-        image: null,
-        description: null,
-        status: 1
-      }
-      this.resetForm('form')
-    },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1
-      this.getList()
-    },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.resetForm('queryForm')
-      this.handleQuery()
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
-    // 排序触发事件
-    handleSortChange(column) {
-      this.queryParams.orderByColumn = column.prop
-      this.queryParams.isAsc = column.order === 'ascending' ? 'asc' : 'desc'
-      this.getList()
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = '添加商品'
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset()
-      const id = row.id || this.ids
-      getProductDetail(id).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = '修改商品'
-      })
-    },
-    /** 查看按钮操作 */
-    handleView(row) {
-      getProductDetail(row.id).then(response => {
-        this.detailData = response.data
-        this.detailOpen = true
-      })
-    },
-    /** 复制按钮操作 */
-    handleCopy(row) {
-      this.$confirm('是否确认复制该商品?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        return copyProduct(row.id)
-      }).then(() => {
-        this.getList()
-        this.$message.success('复制成功')
-      })
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.id != null) {
-            updateProduct(this.form.id, this.form).then(response => {
-              this.$message.success('修改成功')
-              this.open = false
-              this.getList()
-            })
-          } else {
-            createProduct(this.form).then(response => {
-              this.$message.success('新增成功')
-              this.open = false
-              this.getList()
-            })
-          }
-        }
-      })
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const ids = row.id || this.ids
-      this.$confirm('是否确认删除选中的商品数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        if (Array.isArray(ids)) {
-          return batchDeleteProducts(ids)
-        } else {
-          return deleteProduct(ids)
-        }
-      }).then(() => {
-        this.getList()
-        this.$message.success('删除成功')
-      })
-    },
-    /** 状态修改 */
-    handleStatusChange(row) {
-      const text = row.status === 1 ? '上架' : '下架'
-      this.$confirm('确认要"' + text + '""' + row.name + '"商品吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        return updateProductStatus(row.id, { status: row.status })
-      }).then(() => {
-        this.$message.success(text + '成功')
-      }).catch(() => {
-        row.status = row.status === 0 ? 1 : 0
-      })
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.$confirm('是否确认导出所有商品数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        return exportProducts(this.queryParams)
-      }).then(response => {
-        this.download(response.data)
-      })
-    },
-    /** 导入按钮操作 */
-    handleImport() {
-      this.$message.info('导入功能开发中')
-    },
-    /** 文件上传前的钩子 */
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
+    const response = await getProductList(params)
+    productList.value = response.data.list
+    pagination.total = response.data.total
+  } catch (error) {
+    ElMessage.error('获取商品列表失败')
+  } finally {
+    loading.value = false
+  }
+}
 
-      if (!isJPG) {
-        this.$message.error('上传图片只能是 JPG/PNG 格式!')
+// 获取分类列表
+const fetchCategoryList = async () => {
+  try {
+    const response = await getCategoryList()
+    categoryList.value = response.data
+  } catch (error) {
+    ElMessage.error('获取分类列表失败')
+  }
+}
+
+// 获取统计数据
+const fetchStatistics = async () => {
+  try {
+    const response = await getProductStatistics()
+    statistics.value = response.data
+  } catch (error) {
+    console.error('获取统计数据失败:', error)
+  }
+}
+
+// 搜索
+const handleSearch = () => {
+  pagination.page = 1
+  fetchProductList()
+}
+
+// 重置搜索表单
+const resetSearchForm = () => {
+  Object.assign(searchForm, {
+    name: '',
+    sku: '',
+    category_id: '',
+    status: ''
+  })
+  if (searchFormRef.value) {
+    searchFormRef.value.clearValidate()
+  }
+  handleSearch()
+}
+
+// 选择变化
+const handleSelectionChange = (selection) => {
+  selectedProducts.value = selection
+}
+
+// 新增商品
+const handleAdd = () => {
+  isEdit.value = false
+  editingProduct.value = null
+  resetProductForm()
+  dialogVisible.value = true
+}
+
+// 编辑商品
+const handleEdit = async (row) => {
+  try {
+    isEdit.value = true
+    editingProduct.value = row
+    const response = await getProductDetail(row.id)
+    Object.assign(productForm, response.data)
+    dialogVisible.value = true
+  } catch (error) {
+    ElMessage.error('获取商品详情失败')
+  }
+}
+
+// 查看商品
+const handleView = async (row) => {
+  try {
+    const response = await getProductDetail(row.id)
+    currentProduct.value = response.data
+    detailVisible.value = true
+  } catch (error) {
+    ElMessage.error('获取商品详情失败')
+  }
+}
+
+// 复制商品
+const handleCopy = async (row) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要复制商品 "${row.name}" 吗？`,
+      '确认复制',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
-    /** 自定义上传 */
-    handleUpload(options) {
-      // 这里应该调用实际的上传接口
-      // 暂时模拟上传成功
-      this.$message.success('图片上传成功')
-      this.form.image = 'https://via.placeholder.com/300x300'
+    )
+    await copyProduct(row.id)
+    ElMessage.success('复制成功')
+    fetchProductList()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('复制失败')
     }
   }
 }
+
+// 删除商品
+const handleDelete = async (row) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除商品 "${row.name}" 吗？`,
+      '确认删除',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+    await deleteProduct(row.id)
+    ElMessage.success('删除成功')
+    fetchProductList()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('删除失败')
+    }
+  }
+}
+
+// 推荐状态变化
+const handleFeaturedChange = async (row) => {
+  try {
+    await updateProductStatus(row.id, { is_featured: row.is_featured })
+    ElMessage.success('更新成功')
+  } catch (error) {
+    ElMessage.error('更新失败')
+    row.is_featured = !row.is_featured
+  }
+}
+
+// 提交表单
+const handleSubmit = async () => {
+  try {
+    await productFormRef.value.validate()
+    submitting.value = true
+    
+    if (isEdit.value) {
+      await updateProduct(editingProduct.value.id, productForm)
+      ElMessage.success('更新成功')
+    } else {
+      await createProduct(productForm)
+      ElMessage.success('创建成功')
+    }
+    
+    dialogVisible.value = false
+    fetchProductList()
+    fetchStatistics()
+  } catch (error) {
+    if (error !== false) {
+      ElMessage.error(isEdit.value ? '更新失败' : '创建失败')
+    }
+  } finally {
+    submitting.value = false
+  }
+}
+
+// 导入商品
+const handleImport = () => {
+  ElMessage.info('导入功能开发中')
+}
+
+// 导出商品
+const handleExport = async () => {
+  try {
+    await exportProducts(searchForm)
+    ElMessage.success('导出任务已创建，请稍后下载')
+  } catch (error) {
+    ElMessage.error('导出失败')
+  }
+}
+
+// 图片上传前验证
+const beforeImageUpload = (file) => {
+  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+  const isLt2M = file.size / 1024 / 1024 < 2
+
+  if (!isJPG) {
+    ElMessage.error('上传图片只能是 JPG/PNG 格式!')
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传图片大小不能超过 2MB!')
+  }
+  return isJPG && isLt2M
+}
+
+// 处理图片上传
+const handleImageUpload = (options) => {
+  // 这里应该调用实际的上传接口
+  // 暂时模拟上传成功
+  ElMessage.success('图片上传成功')
+  productForm.image = 'https://via.placeholder.com/300x300'
+}
+
+// 获取分类名称
+const getCategoryName = (categoryId) => {
+  const category = categoryList.value.find(item => item.id === categoryId)
+  return category ? category.name : '-'
+}
+
+// 获取状态类型
+const getStatusType = (status) => {
+  const statusMap = {
+    active: 'success',
+    inactive: 'warning',
+    sold_out: 'danger'
+  }
+  return statusMap[status] || 'info'
+}
+
+// 获取状态文本
+const getStatusText = (status) => {
+  const statusMap = {
+    active: '上架',
+    inactive: '下架',
+    sold_out: '售罄'
+  }
+  return statusMap[status] || '未知'
+}
+
+// 对话框关闭处理
+const handleDialogClose = () => {
+  resetProductForm()
+}
+
+// 重置表单
+const resetProductForm = () => {
+  Object.assign(productForm, {
+    name: '',
+    sku: '',
+    category_id: '',
+    description: '',
+    points: 0,
+    cash_price: 0,
+    stock: 0,
+    low_stock_threshold: 10,
+    image: '',
+    status: 'active',
+    is_featured: false,
+    detail: ''
+  })
+  editingProduct.value = null
+  if (productFormRef.value) {
+    productFormRef.value.clearValidate()
+  }
+}
+
+// 生命周期
+onMounted(() => {
+  fetchProductList()
+  fetchCategoryList()
+  fetchStatistics()
+})
 </script>
 
-<style lang="scss" scoped>
-.filter-container {
+<style scoped>
+.points-mall-products {
+  padding: 20px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  color: #303133;
+}
+
+.header-content p {
+  margin: 0;
+  color: #909399;
+  font-size: 14px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.stats-cards {
   margin-bottom: 20px;
 }
 
-.operate-container {
-  margin-bottom: 20px;
-  
-  .operate-buttons {
-    .el-button {
-      margin-right: 10px;
-    }
-  }
+.stat-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.table-container {
-  .points-price {
-    color: #e6a23c;
-    font-weight: bold;
-  }
-  
-  .image-slot {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    background: #f5f7fa;
-    color: #909399;
-    font-size: 20px;
-  }
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #909399;
+}
+
+.search-card,
+.table-card {
+  margin-bottom: 20px;
+}
+
+.points-price {
+  color: #e6a23c;
+  font-weight: bold;
+}
+
+.text-muted {
+  color: #909399;
+}
+
+.image-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background: #f5f7fa;
+  color: #909399;
+  border-radius: 4px;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .image-preview {
   margin-top: 10px;
 }
 
-.upload-demo {
-  .el-upload__tip {
-    margin-top: 5px;
-    font-size: 12px;
+.product-detail {
+  .product-image,
+  .product-description,
+  .product-detail-content {
+    margin-top: 20px;
+  }
+  
+  h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #303133;
+  }
+  
+  p {
+    margin: 0;
     color: #606266;
+    line-height: 1.6;
   }
 }
 </style>

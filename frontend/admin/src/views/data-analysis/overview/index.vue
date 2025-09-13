@@ -133,7 +133,10 @@ import { ref, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Refresh, Download, User, ShoppingCart, ChatDotRound, TrendCharts, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
-import { getOverviewStats, getVisitTrend, getUserDistribution, getPopularFeatures, getRealtimeData, getSystemStatus } from '@/api/data-analysis/overview'
+import { 
+  getOverviewStats, getVisitTrend, getUserDistribution, getPopularFeatures, 
+  getRealtimeData, getSystemStatus, exportOverviewReport 
+} from '@/api/data-analysis/overview'
 
 // 响应式数据
 const visitTrendPeriod = ref('7d')
@@ -220,24 +223,278 @@ const refreshData = async () => {
   }
 }
 
-const exportReport = () => {
-  ElMessage.success('报告导出功能开发中')
+const exportReport = async () => {
+  try {
+    const response = await exportOverviewReport()
+    // 创建下载链接
+    const url = window.URL.createObjectURL(new Blob([response]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `数据概览报告_${new Date().toISOString().slice(0, 10)}.xlsx`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+    ElMessage.success('报告导出成功')
+  } catch (error) {
+    ElMessage.error('报告导出失败')
+  }
 }
 
 const loadData = async () => {
   try {
     // 加载统计数据
-    // const stats = await getOverviewStats()
-    // statsData.value = stats
+    const [statsRes, featuresRes, realtimeRes, statusRes] = await Promise.all([
+      getOverviewStats(),
+      getPopularFeatures(),
+      getRealtimeData(),
+      getSystemStatus()
+    ])
+    
+    // 更新统计数据
+    if (statsRes.data) {
+      statsData.value = [
+        {
+          key: 'users',
+          label: '总用户数',
+          value: statsRes.data.totalUsers?.toLocaleString() || '0',
+          change: statsRes.data.userGrowth || '+0%',
+          changeClass: statsRes.data.userGrowth?.startsWith('+') ? 'positive' : 'negative',
+          changeIcon: statsRes.data.userGrowth?.startsWith('+') ? 'ArrowUp' : 'ArrowDown',
+          icon: 'User',
+          iconClass: 'user-icon'
+        },
+        {
+          key: 'orders',
+          label: '总订单数',
+          value: statsRes.data.totalOrders?.toLocaleString() || '0',
+          change: statsRes.data.orderGrowth || '+0%',
+          changeClass: statsRes.data.orderGrowth?.startsWith('+') ? 'positive' : 'negative',
+          changeIcon: statsRes.data.orderGrowth?.startsWith('+') ? 'ArrowUp' : 'ArrowDown',
+          icon: 'ShoppingCart',
+          iconClass: 'order-icon'
+        },
+        {
+          key: 'messages',
+          label: '消息总数',
+          value: statsRes.data.totalMessages?.toLocaleString() || '0',
+          change: statsRes.data.messageGrowth || '+0%',
+          changeClass: statsRes.data.messageGrowth?.startsWith('+') ? 'positive' : 'negative',
+          changeIcon: statsRes.data.messageGrowth?.startsWith('+') ? 'ArrowUp' : 'ArrowDown',
+          icon: 'ChatDotRound',
+          iconClass: 'message-icon'
+        },
+        {
+          key: 'revenue',
+          label: '总收入',
+          value: `¥${statsRes.data.totalRevenue?.toLocaleString() || '0'}`,
+          change: statsRes.data.revenueGrowth || '+0%',
+          changeClass: statsRes.data.revenueGrowth?.startsWith('+') ? 'positive' : 'negative',
+          changeIcon: statsRes.data.revenueGrowth?.startsWith('+') ? 'ArrowUp' : 'ArrowDown',
+          icon: 'TrendCharts',
+          iconClass: 'revenue-icon'
+        }
+      ]
+    }
+    
+    // 更新热门功能
+    if (featuresRes.data) {
+      popularFeatures.value = featuresRes.data
+    }
+    
+    // 更新实时数据
+    if (realtimeRes.data) {
+      realtimeData.value = [
+        { label: '在线用户', value: realtimeRes.data.onlineUsers?.toLocaleString() || '0', valueClass: 'online' },
+        { label: '今日访问', value: realtimeRes.data.todayVisits?.toLocaleString() || '0', valueClass: 'visit' },
+        { label: '今日订单', value: realtimeRes.data.todayOrders?.toLocaleString() || '0', valueClass: 'order' },
+        { label: '今日收入', value: `¥${realtimeRes.data.todayRevenue?.toLocaleString() || '0'}`, valueClass: 'income' }
+      ]
+    }
+    
+    // 更新系统状态
+    if (statusRes.data) {
+      systemStatus.value = statusRes.data
+    }
     
     // 加载图表数据
     await loadCharts()
   } catch (error) {
     console.error('加载数据失败:', error)
+    // 使用默认数据
+    await loadCharts()
   }
 }
 
 const loadCharts = async () => {
+  await nextTick()
+  
+  try {
+    // 获取图表数据
+    const [visitTrendRes, userDistRes] = await Promise.all([
+      getVisitTrend({ period: visitTrendPeriod.value }),
+      getUserDistribution()
+    ])
+    
+    // 访问趋势图
+    if (visitTrendChart.value) {
+      const chart = echarts.init(visitTrendChart.value)
+      const visitData = visitTrendRes.data || {
+        dates: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        visits: [820, 932, 901, 934, 1290, 1330, 1320]
+      }
+      
+      const option = {
+        tooltip: {
+          trigger: 'axis',
+          formatter: function(params) {
+            return `${params[0].name}<br/>${params[0].seriesName}: ${params[0].value}`
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: visitData.dates,
+          axisLine: {
+            lineStyle: {
+              color: '#e0e6ed'
+            }
+          },
+          axisTick: {
+            show: false
+          },
+          axisLabel: {
+            color: '#8492a6'
+          }
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          axisLabel: {
+            color: '#8492a6'
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#f0f3f6'
+            }
+          }
+        },
+        series: [{
+          name: '访问量',
+          data: visitData.visits,
+          type: 'line',
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 6,
+          lineStyle: {
+            color: '#409eff',
+            width: 3
+          },
+          itemStyle: {
+            color: '#409eff'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0, color: 'rgba(64, 158, 255, 0.3)'
+              }, {
+                offset: 1, color: 'rgba(64, 158, 255, 0.05)'
+              }]
+            }
+          }
+        }]
+      }
+      chart.setOption(option)
+      
+      // 响应式处理
+      window.addEventListener('resize', () => {
+        chart.resize()
+      })
+    }
+    
+    // 用户分布图
+    if (userDistributionChart.value) {
+      const chart = echarts.init(userDistributionChart.value)
+      const userData = userDistRes.data || [
+        { value: 1048, name: '新用户' },
+        { value: 735, name: '活跃用户' },
+        { value: 580, name: '沉睡用户' },
+        { value: 484, name: '流失用户' }
+      ]
+      
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          textStyle: {
+            color: '#8492a6'
+          }
+        },
+        series: [{
+          name: '用户分布',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          center: ['60%', '50%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '18',
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: userData,
+          itemStyle: {
+            borderRadius: 8,
+            borderColor: '#fff',
+            borderWidth: 2
+          },
+          color: ['#409eff', '#67c23a', '#e6a23c', '#f56c6c']
+        }]
+      }
+      chart.setOption(option)
+      
+      // 响应式处理
+      window.addEventListener('resize', () => {
+        chart.resize()
+      })
+    }
+  } catch (error) {
+    console.error('加载图表数据失败:', error)
+    // 使用默认数据渲染图表
+    loadDefaultCharts()
+  }
+}
+
+// 加载默认图表数据
+const loadDefaultCharts = async () => {
   await nextTick()
   
   // 访问趋势图
@@ -246,6 +503,12 @@ const loadCharts = async () => {
     const option = {
       tooltip: {
         trigger: 'axis'
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
       },
       xAxis: {
         type: 'category',
