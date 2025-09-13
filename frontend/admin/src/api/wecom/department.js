@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function getDepartmentList(params) {
   return request({
-    url: '/api/wecom-service/api/contacts/departments',
+    url: '/api/wecom/api/contacts/departments',
     method: 'get',
     params
   })
@@ -20,7 +20,7 @@ export function getDepartmentList(params) {
  */
 export function getDepartmentTree(params = {}) {
   return request({
-    url: '/wecom-service/api/contacts/departments',
+    url: '/api/wecom/api/contacts/departments',
     method: 'get',
     params: {
       tree: true,
@@ -36,7 +36,7 @@ export function getDepartmentTree(params = {}) {
  */
 export function getDepartmentDetail(departmentId) {
   return request({
-    url: `/wecom-service/api/contacts/departments/${departmentId}`,
+    url: `/api/wecom/api/contacts/departments/${departmentId}`,
     method: 'get'
   })
 }
@@ -48,7 +48,7 @@ export function getDepartmentDetail(departmentId) {
  */
 export function getDepartmentStats(departmentId) {
   return request({
-    url: `/wecom-service/api/contacts/departments/${departmentId}/stats`,
+    url: `/api/wecom/api/contacts/departments/${departmentId}/stats`,
     method: 'get'
   })
 }
@@ -61,7 +61,7 @@ export function getDepartmentStats(departmentId) {
  */
 export function getChildDepartments(parentId, params) {
   return request({
-    url: '/wecom-service/api/contacts/departments',
+    url: '/api/wecom/api/contacts/departments',
     method: 'get',
     params: {
       parent_id: parentId,
@@ -77,7 +77,7 @@ export function getChildDepartments(parentId, params) {
  */
 export function syncDepartments(data) {
   return request({
-    url: '/api/wecom-service/api/contacts/departments/sync',
+    url: '/api/wecom/api/contacts/departments/sync',
     method: 'post',
     data,
     timeout: 60000 // 1分钟超时
@@ -91,7 +91,7 @@ export function syncDepartments(data) {
  */
 export function getDepartmentPath(departmentId) {
   return request({
-    url: `/wecom-service/api/contacts/departments/${departmentId}/path`,
+    url: `/api/wecom/api/contacts/departments/${departmentId}/path`,
     method: 'get'
   })
 }
@@ -103,7 +103,7 @@ export function getDepartmentPath(departmentId) {
  */
 export function searchDepartments(params) {
   return request({
-    url: '/api/wecom-service/api/contacts/departments/search',
+    url: '/api/wecom/api/contacts/departments/search',
     method: 'get',
     params
   })

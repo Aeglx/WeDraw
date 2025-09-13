@@ -26,22 +26,22 @@ const logFormat = winston.format.combine(
 
 // 创建logger实例
 const logger = winston.createLogger({
-  level: config.log.level,
+  level: config.logging.level,
   format: logFormat,
   defaultMeta: { service: 'wecom-service' },
   transports: [
     // 错误日志文件
     new winston.transports.File({
-      filename: path.join(config.log.dir, 'error.log'),
+      filename: path.join('./logs', 'error.log'),
       level: 'error',
-      maxsize: config.log.maxSize,
-      maxFiles: config.log.maxFiles,
+      maxsize: config.logging.file.maxSize,
+      maxFiles: config.logging.file.maxFiles,
     }),
     // 组合日志文件
     new winston.transports.File({
-      filename: path.join(config.log.dir, 'combined.log'),
-      maxsize: config.log.maxSize,
-      maxFiles: config.log.maxFiles,
+      filename: path.join('./logs', 'combined.log'),
+      maxsize: config.logging.file.maxSize,
+      maxFiles: config.logging.file.maxFiles,
     }),
   ],
 });

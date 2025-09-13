@@ -108,6 +108,19 @@ module.exports = {
     ttl: parseInt(process.env.CACHE_TTL) || 3600, // 1小时
     checkPeriod: parseInt(process.env.CACHE_CHECK_PERIOD) || 600, // 10分钟
   },
+
+  // 速率限制配置
+  rateLimit: {
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15分钟
+    max: parseInt(process.env.RATE_LIMIT_MAX) || 100, // 每个IP最多100个请求
+  },
+
+  // 慢速限制配置
+  slowDown: {
+    windowMs: parseInt(process.env.SLOW_DOWN_WINDOW_MS) || 15 * 60 * 1000, // 15分钟
+    delayAfter: parseInt(process.env.SLOW_DOWN_DELAY_AFTER) || 50, // 50个请求后开始延迟
+    delayMs: parseInt(process.env.SLOW_DOWN_DELAY_MS) || 500, // 延迟500ms
+  },
   
   // 邮件配置
   email: {

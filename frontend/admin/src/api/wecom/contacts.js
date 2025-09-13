@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function getUserList(params) {
   return request({
-    url: '/api/wecom-service/api/contacts/users',
+    url: '/api/wecom/api/contacts/users',
     method: 'get',
     params
   })
@@ -20,7 +20,7 @@ export function getUserList(params) {
  */
 export function getUserDetail(userid) {
   return request({
-    url: `/wecom-service/api/contacts/users/${userid}`,
+    url: `/api/wecom/api/contacts/users/${userid}`,
     method: 'get'
   })
 }
@@ -32,7 +32,7 @@ export function getUserDetail(userid) {
  */
 export function syncContacts(data) {
   return request({
-    url: '/api/wecom-service/api/contacts/sync',
+    url: '/api/wecom/api/contacts/sync',
     method: 'post',
     data,
     timeout: 300000 // 5分钟超时
@@ -45,7 +45,7 @@ export function syncContacts(data) {
  */
 export function getStatistics() {
   return request({
-    url: '/api/wecom-service/api/contacts/statistics',
+    url: '/api/wecom/api/contacts/statistics',
     method: 'get'
   })
 }
@@ -57,7 +57,7 @@ export function getStatistics() {
  */
 export function exportContacts(params) {
   return request({
-    url: '/api/wecom-service/api/contacts/export',
+    url: '/api/wecom/api/contacts/export',
     method: 'get',
     params,
     responseType: 'blob',
@@ -96,7 +96,7 @@ export function batchGetUsers(data) {
  */
 export function searchUsers(params) {
   return request({
-    url: '/api/wecom-service/api/contacts/users/search',
+    url: '/api/wecom/api/contacts/users/search',
     method: 'get',
     params
   })
@@ -109,7 +109,7 @@ export function searchUsers(params) {
  */
 export function getUserDepartments(userid) {
   return request({
-    url: `/wecom-service/api/contacts/users/${userid}/departments`,
+    url: `/api/wecom/api/contacts/users/${userid}/departments`,
     method: 'get'
   })
 }
@@ -122,7 +122,7 @@ export function getUserDepartments(userid) {
  */
 export function getDepartmentUsers(departmentId, params) {
   return request({
-    url: `/wecom-service/api/contacts/departments/${departmentId}/users`,
+    url: `/api/wecom/api/contacts/departments/${departmentId}/users`,
     method: 'get',
     params
   })

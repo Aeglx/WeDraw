@@ -1,4 +1,4 @@
-const Redis = require('ioredis');
+const { createClient } = require('redis');
 const config = require('../config');
 const logger = require('./logger');
 
@@ -27,14 +27,13 @@ class CacheService {
    */
   initRedis() {
     try {
-      this.redis = new Redis({
-        host: config.redis.host,
-        port: config.redis.port,
-        password: config.redis.password,
-        db: config.redis.db,
-        retryDelayOnFailover: 100,
-        maxRetriesPerRequest: 3,
-        lazyConnect: true,
+      const redisUrl = `redis://${config.redis.password ? `:${config.redis.password}@` : ''}${config.redis.host}:${config.redis.port}/${config.redis.db}`;
+      
+      this.redis = createClient({
+        url: redisUrl,
+        socket: {
+          reconnectStrategy: (retries) => Math.min(retries * 50, 500)
+        }
       });
 
       this.redis.on('connect', () => {
@@ -47,7 +46,7 @@ class CacheService {
         this.isConnected = false;
       });
 
-      this.redis.on('close', () => {
+      this.redis.on('end', () => {
         logger.warn('Redis connection closed');
         this.isConnected = false;
       });
