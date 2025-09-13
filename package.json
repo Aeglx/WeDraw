@@ -1,0 +1,44 @@
+{
+  "name": "wedraw-platform",
+  "version": "1.0.0",
+  "description": "企业微信、公众号、小程序及积分商城管理平台",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:gateway\" \"npm run dev:user\" \"npm run dev:official\" \"npm run dev:wecom\" \"npm run dev:miniprogram\" \"npm run dev:points\" \"npm run dev:message\" \"npm run dev:analysis\"",
+    "dev:gateway": "cd backend/api-gateway && npm run dev",
+    "dev:user": "cd backend/user-center && npm run dev",
+    "dev:official": "cd backend/official && npm run dev",
+    "dev:wecom": "cd backend/wecom && npm run dev",
+    "dev:miniprogram": "cd backend/miniprogram && npm run dev",
+    "dev:points": "cd backend/points && npm run dev",
+    "dev:message": "cd backend/message && npm run dev",
+    "dev:analysis": "cd backend/analysis && npm run dev",
+    "start": "concurrently \"npm run start:gateway\" \"npm run start:user\" \"npm run start:official\" \"npm run start:wecom\" \"npm run start:miniprogram\" \"npm run start:points\" \"npm run start:message\" \"npm run start:analysis\"",
+    "start:gateway": "cd backend/api-gateway && npm start",
+    "start:user": "cd backend/user-center && npm start",
+    "start:official": "cd backend/official && npm start",
+    "start:wecom": "cd backend/wecom && npm start",
+    "start:miniprogram": "cd backend/miniprogram && npm start",
+    "start:points": "cd backend/points && npm start",
+    "start:message": "cd backend/message && npm start",
+    "start:analysis": "cd backend/analysis && npm start",
+    "install:all": "npm install && npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend/api-gateway && npm install && cd ../user-center && npm install && cd ../official && npm install && cd ../wecom && npm install && cd ../miniprogram && npm install && cd ../points && npm install && cd ../message && npm install && cd ../analysis && npm install",
+    "install:frontend": "cd frontend/admin-web && npm install && cd ../miniprogram && npm install && cd ../official-h5 && npm install && cd ../wecom-h5 && npm install && cd ../points-h5 && npm install",
+    "build:frontend": "cd frontend/admin-web && npm run build && cd ../official-h5 && npm run build && cd ../wecom-h5 && npm run build && cd ../points-h5 && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wechat",
+    "wecom",
+    "miniprogram",
+    "points",
+    "management",
+    "platform"
+  ],
+  "author": "WeDraw Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
