@@ -268,12 +268,21 @@
 <script>
 import { listFans, getFan, updateFan, blockFan, unblockFan, syncFans, exportFans, batchTagFans } from '@/api/wechat/fans'
 import { listTags } from '@/api/wechat/tag'
+import { parseTime } from '@/utils/index'
 
 export default {
   name: 'WechatFans',
   dicts: ['sys_user_sex'],
   data() {
     return {
+      // 字典数据
+      dict: {
+        sys_user_sex: [
+          { label: '男', value: '0' },
+          { label: '女', value: '1' },
+          { label: '未知', value: '2' }
+        ]
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -498,7 +507,9 @@ export default {
         blocked: '已拉黑'
       }
       return statusMap[status] || '未知'
-    }
+    },
+    /** 时间格式化 */
+    parseTime
   }
 }
 </script>

@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function getUserList(params) {
   return request({
-    url: '/wecom-service/api/contacts/users',
+    url: '/api/wecom-service/api/contacts/users',
     method: 'get',
     params
   })
@@ -32,7 +32,7 @@ export function getUserDetail(userid) {
  */
 export function syncContacts(data) {
   return request({
-    url: '/wecom-service/api/contacts/sync',
+    url: '/api/wecom-service/api/contacts/sync',
     method: 'post',
     data,
     timeout: 300000 // 5分钟超时
@@ -45,7 +45,7 @@ export function syncContacts(data) {
  */
 export function getStatistics() {
   return request({
-    url: '/wecom-service/api/contacts/statistics',
+    url: '/api/wecom-service/api/contacts/statistics',
     method: 'get'
   })
 }
@@ -57,7 +57,7 @@ export function getStatistics() {
  */
 export function exportContacts(params) {
   return request({
-    url: '/wecom-service/api/contacts/export',
+    url: '/api/wecom-service/api/contacts/export',
     method: 'get',
     params,
     responseType: 'blob',
@@ -71,7 +71,7 @@ export function exportContacts(params) {
  */
 export function getSyncStatus() {
   return request({
-    url: '/wecom-service/api/contacts/sync/status',
+    url: '/api/wecom-service/api/contacts/sync/status',
     method: 'get'
   })
 }
@@ -83,7 +83,7 @@ export function getSyncStatus() {
  */
 export function batchGetUsers(data) {
   return request({
-    url: '/wecom-service/api/contacts/users/batch',
+    url: '/api/wecom-service/api/contacts/users/batch',
     method: 'post',
     data
   })
@@ -96,7 +96,7 @@ export function batchGetUsers(data) {
  */
 export function searchUsers(params) {
   return request({
-    url: '/wecom-service/api/contacts/users/search',
+    url: '/api/wecom-service/api/contacts/users/search',
     method: 'get',
     params
   })

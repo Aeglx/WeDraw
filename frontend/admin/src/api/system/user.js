@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询用户列表
 export function listUser(query) {
   return request({
-    url: '/user-center/system/user/list',
+    url: '/api/user-center/system/user/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listUser(query) {
 // 查询用户详细
 export function getUser(userId) {
   return request({
-    url: '/user-center/system/user/' + userId,
+    url: '/api/user-center/system/user/' + userId,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getUser(userId) {
 // 新增用户
 export function addUser(data) {
   return request({
-    url: '/user-center/system/user',
+    url: '/api/user-center/system/user',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function addUser(data) {
 // 修改用户
 export function updateUser(data) {
   return request({
-    url: '/user-center/system/user',
+    url: '/api/user-center/system/user',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export function updateUser(data) {
 // 删除用户
 export function delUser(userId) {
   return request({
-    url: '/user-center/system/user/' + userId,
+    url: '/api/user-center/system/user/' + userId,
     method: 'delete'
   })
 }
@@ -50,7 +50,7 @@ export function resetUserPwd(userId, password) {
     password
   }
   return request({
-    url: '/user-center/system/user/resetPwd',
+    url: '/api/user-center/system/user/resetPwd',
     method: 'put',
     data: data
   })
@@ -63,7 +63,7 @@ export function changeUserStatus(userId, status) {
     status
   }
   return request({
-    url: '/user-center/system/user/changeStatus',
+    url: '/api/user-center/system/user/changeStatus',
     method: 'put',
     data: data
   })
@@ -72,7 +72,7 @@ export function changeUserStatus(userId, status) {
 // 查询用户个人信息
 export function getUserProfile() {
   return request({
-    url: '/user-center/system/user/profile',
+    url: '/api/user-center/system/user/profile',
     method: 'get'
   })
 }
@@ -80,7 +80,7 @@ export function getUserProfile() {
 // 修改用户个人信息
 export function updateUserProfile(data) {
   return request({
-    url: '/user-center/system/user/profile',
+    url: '/api/user-center/system/user/profile',
     method: 'put',
     data: data
   })
@@ -93,7 +93,7 @@ export function updateUserPwd(oldPassword, newPassword) {
     newPassword
   }
   return request({
-    url: '/user-center/system/user/profile/updatePwd',
+    url: '/api/user-center/system/user/profile/updatePwd',
     method: 'put',
     data: data
   })
@@ -102,7 +102,7 @@ export function updateUserPwd(oldPassword, newPassword) {
 // 用户头像上传
 export function uploadAvatar(data) {
   return request({
-    url: '/user-center/system/user/avatar',
+    url: '/api/user-center/system/user/avatar',
     method: 'post',
     data: data
   })
@@ -111,7 +111,7 @@ export function uploadAvatar(data) {
 // 查询授权角色
 export function getAuthRole(userId) {
   return request({
-    url: '/user-center/system/user/authRole/' + userId,
+    url: '/api/user-center/system/user/authRole/' + userId,
     method: 'get'
   })
 }
@@ -119,7 +119,7 @@ export function getAuthRole(userId) {
 // 保存授权角色
 export function updateAuthRole(data) {
   return request({
-    url: '/user-center/system/user/authRole',
+    url: '/api/user-center/system/user/authRole',
     method: 'put',
     params: data
   })
@@ -128,7 +128,7 @@ export function updateAuthRole(data) {
 // 查询部门下拉树结构
 export function deptTreeSelect() {
   return request({
-    url: '/user-center/system/user/deptTree',
+    url: '/api/user-center/system/user/deptTree',
     method: 'get'
   })
 }

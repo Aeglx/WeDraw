@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询菜单列表
 export function listMenu(query) {
   return request({
-    url: '/user-center/system/menu/list',
+    url: '/api/user-center/system/menu/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listMenu(query) {
 // 查询菜单详细
 export function getMenu(menuId) {
   return request({
-    url: '/user-center/system/menu/' + menuId,
+    url: '/api/user-center/system/menu/' + menuId,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getMenu(menuId) {
 // 查询菜单下拉树结构
 export function treeselect() {
   return request({
-    url: '/user-center/system/menu/treeselect',
+    url: '/api/user-center/system/menu/treeselect',
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export function treeselect() {
 // 根据角色ID查询菜单下拉树结构
 export function roleMenuTreeselect(roleId) {
   return request({
-    url: '/user-center/system/menu/roleMenuTreeselect/' + roleId,
+    url: '/api/user-center/system/menu/roleMenuTreeselect/' + roleId,
     method: 'get'
   })
 }
@@ -36,7 +36,7 @@ export function roleMenuTreeselect(roleId) {
 // 新增菜单
 export function addMenu(data) {
   return request({
-    url: '/user-center/system/menu',
+    url: '/api/user-center/system/menu',
     method: 'post',
     data: data
   })
@@ -45,7 +45,7 @@ export function addMenu(data) {
 // 修改菜单
 export function updateMenu(data) {
   return request({
-    url: '/user-center/system/menu',
+    url: '/api/user-center/system/menu',
     method: 'put',
     data: data
   })

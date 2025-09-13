@@ -70,7 +70,7 @@
               <span>用户增长趋势</span>
             </div>
           </template>
-          <div class="chart-container" id="userChart"></div>
+          <div id="userChart" class="chart-container"></div>
         </el-card>
       </el-col>
       
@@ -120,17 +120,44 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { User, ChatDotRound, ShoppingCart, Money, DataAnalysis } from '@element-plus/icons-vue'
+import { getDashboardStats, getUserGrowthData, getOrderStatsData } from '@/api/dashboard'
+import * as echarts from 'echarts'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 
 // 统计数据
-const userCount = ref(1234)
-const wechatFans = ref(5678)
-const orderCount = ref(890)
-const revenue = ref(12345.67)
+const userCount = ref(0)
+const wechatFans = ref(0)
+const orderCount = ref(0)
+const revenue = ref(0)
+const loading = ref(true)
+
+// 图表实例
+const userGrowthChart = ref(null)
+const orderStatsChart = ref(null)
+
+// 获取仪表盘数据
+const fetchDashboardData = async () => {
+  try {
+    loading.value = true
+    const response = await getDashboardStats()
+    if (response.code === 200) {
+      userCount.value = response.data.userCount
+      wechatFans.value = response.data.wechatFans
+      orderCount.value = response.data.orderCount
+      revenue.value = response.data.revenue
+    }
+  } catch (error) {
+    console.error('获取仪表盘数据失败:', error)
+    ElMessage.error('获取数据失败')
+  } finally {
+    loading.value = false
+  }
+}
 
 // 页面跳转方法
 const goToUserManagement = () => {
@@ -149,14 +176,145 @@ const goToDataAnalysis = () => {
   router.push('/data/overview')
 }
 
-// 初始化图表（这里可以集成 ECharts 或其他图表库）
-const initCharts = () => {
-  // TODO: 集成图表库，如 ECharts
-  console.log('初始化图表')
+// 初始化用户增长图表
+const initUserGrowthChart = async () => {
+  try {
+    const response = await getUserGrowthData()
+    if (response.code === 200) {
+      const chartDom = document.getElementById('userChart')
+      userGrowthChart.value = echarts.init(chartDom)
+      
+      const option = {
+        title: {
+          text: '用户增长趋势',
+          left: 'center',
+          textStyle: {
+            fontSize: 16,
+            fontWeight: 'bold'
+          }
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          data: response.data.dates,
+          axisLabel: {
+            formatter: function(value) {
+              return value.split('-').slice(1).join('/')
+            }
+          }
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: response.data.users,
+          type: 'line',
+          smooth: true,
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: 'rgba(102, 126, 234, 0.6)'
+            }, {
+              offset: 1,
+              color: 'rgba(102, 126, 234, 0.1)'
+            }])
+          },
+          lineStyle: {
+            color: '#667eea'
+          },
+          itemStyle: {
+            color: '#667eea'
+          }
+        }]
+      }
+      
+      userGrowthChart.value.setOption(option)
+    }
+  } catch (error) {
+    console.error('初始化用户增长图表失败:', error)
+  }
 }
 
-onMounted(() => {
-  initCharts()
+// 初始化订单统计图表
+const initOrderStatsChart = async () => {
+  try {
+    const response = await getOrderStatsData()
+    if (response.code === 200) {
+      const chartDom = document.getElementById('orderChart')
+      orderStatsChart.value = echarts.init(chartDom)
+      
+      const option = {
+        title: {
+          text: '订单统计',
+          left: 'center',
+          textStyle: {
+            fontSize: 16,
+            fontWeight: 'bold'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        series: [{
+          name: '订单状态',
+          type: 'pie',
+          radius: '60%',
+          center: ['50%', '60%'],
+          data: response.data.categories.map((category, index) => ({
+            name: category,
+            value: response.data.values[index]
+          })),
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }]
+      }
+      
+      orderStatsChart.value.setOption(option)
+    }
+  } catch (error) {
+    console.error('初始化订单统计图表失败:', error)
+  }
+}
+
+// 初始化图表
+const initCharts = async () => {
+  await nextTick()
+  await initUserGrowthChart()
+  await initOrderStatsChart()
+}
+
+// 窗口大小改变时重新调整图表
+const handleResize = () => {
+  if (userGrowthChart.value) {
+    userGrowthChart.value.resize()
+  }
+  if (orderStatsChart.value) {
+    orderStatsChart.value.resize()
+  }
+}
+
+onMounted(async () => {
+  await fetchDashboardData()
+  await initCharts()
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+  if (userGrowthChart.value) {
+    userGrowthChart.value.dispose()
+  }
+  if (orderStatsChart.value) {
+    orderStatsChart.value.dispose()
+  }
 })
 </script>
 
@@ -274,15 +432,7 @@ onMounted(() => {
 
 .chart-container {
   height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 8px;
-  color: #6c757d;
-  font-size: 16px;
-  font-weight: 500;
-  border: 2px dashed #dee2e6;
+  width: 100%;
 }
 
 .action-row {

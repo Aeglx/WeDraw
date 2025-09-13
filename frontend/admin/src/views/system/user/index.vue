@@ -283,11 +283,14 @@
   </div>
 </template>
 
-<script setup name="User">
-import { ref, reactive, onMounted } from 'vue'
+<script setup>
+import { ref, reactive, onMounted, nextTick, getCurrentInstance } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { parseTime } from '@/utils/index'
+import { parseTime } from '@/utils/ruoyi'
 import { getToken } from '@/utils/auth'
+import { listUser, getUser, addUser, updateUser, delUser, resetUserPwd, changeUserStatus, deptTreeSelect } from '@/api/system/user'
+
+const { proxy } = getCurrentInstance()
 import Pagination from '@/components/Pagination/index.vue'
 import RightToolbar from '@/components/RightToolbar/index.vue'
 
@@ -394,31 +397,23 @@ const sys_user_sex = ref([
 /** 查询用户列表 */
 function getList() {
   loading.value = true
-  // 模拟数据
-  setTimeout(() => {
-    userList.value = [
-      {
-        userId: 1,
-        userName: 'admin',
-        nickName: '管理员',
-        dept: { deptName: '总公司' },
-        phonenumber: '15888888888',
-        status: '0',
-        createTime: '2023-01-01 00:00:00'
-      },
-      {
-        userId: 2,
-        userName: 'test',
-        nickName: '测试用户',
-        dept: { deptName: '技术部' },
-        phonenumber: '15666666666',
-        status: '0',
-        createTime: '2023-01-02 00:00:00'
-      }
-    ]
-    total.value = 2
+  const params = {
+    ...queryParams.value
+  }
+  if (dateRange.value && dateRange.value.length === 2) {
+    params.beginTime = dateRange.value[0]
+    params.endTime = dateRange.value[1]
+  }
+  
+  listUser(params).then(response => {
+    if (response.code === 200) {
+      userList.value = response.data.list
+      total.value = response.data.total
+    }
     loading.value = false
-  }, 1000)
+  }).catch(() => {
+    loading.value = false
+  })
 }
 
 /** 搜索按钮操作 */
@@ -456,15 +451,27 @@ function handleStatusChange(row) {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(function() {
+    return changeUserStatus(row.userId, row.status)
+  }).then(() => {
     ElMessage.success(text + '成功')
   }).catch(function() {
     row.status = row.status === '0' ? '1' : '0'
   })
 }
 
+/** 获取部门树选择框列表 */
+function getDeptTree() {
+  deptTreeSelect().then(response => {
+    if (response.code === 200) {
+      deptOptions.value = response.data
+    }
+  })
+}
+
 /** 新增按钮操作 */
 function handleAdd() {
   reset()
+  getDeptTree()
   open.value = true
   title.value = '添加用户'
   form.value.password = initPassword.value
@@ -473,23 +480,15 @@ function handleAdd() {
 /** 修改按钮操作 */
 function handleUpdate(row) {
   reset()
+  getDeptTree()
   const userId = row.userId || ids.value
-  open.value = true
-  title.value = '修改用户'
-  // 模拟获取用户详细信息
-  form.value = {
-    userId: userId,
-    userName: 'test',
-    nickName: '测试用户',
-    phonenumber: '15666666666',
-    email: 'test@example.com',
-    sex: '0',
-    status: '0',
-    deptId: 1,
-    postIds: [1],
-    roleIds: [2],
-    remark: '测试用户'
-  }
+  getUser(userId).then(response => {
+    if (response.code === 200) {
+      form.value = response.data
+      open.value = true
+      title.value = '修改用户'
+    }
+  })
 }
 
 /** 重置密码按钮操作 */
@@ -501,7 +500,9 @@ function handleResetPwd(row) {
     inputPattern: /^.{5,20}$/,
     inputErrorMessage: '用户密码长度必须介于 5 和 20 之间'
   }).then(({ value }) => {
-    ElMessage.success('修改成功，新密码是：' + value)
+    return resetUserPwd(row.userId, value)
+  }).then(() => {
+    ElMessage.success('修改成功')
   })
 }
 
@@ -519,6 +520,8 @@ function handleDelete(row) {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(function() {
+    return delUser(userIds)
+  }).then(() => {
     ElMessage.success('删除成功')
     getList()
   })
@@ -536,13 +539,28 @@ function handleImport() {
 
 /** 提交按钮 */
 function submitForm() {
-  if (form.value.userId != undefined) {
-    ElMessage.success('修改成功')
-  } else {
-    ElMessage.success('新增成功')
-  }
-  open.value = false
-  getList()
+  const userRef = proxy.$refs['userRef']
+  userRef.validate(valid => {
+    if (valid) {
+      if (form.value.userId != undefined) {
+        updateUser(form.value).then(response => {
+          if (response.code === 200) {
+            ElMessage.success('修改成功')
+            open.value = false
+            getList()
+          }
+        })
+      } else {
+        addUser(form.value).then(response => {
+          if (response.code === 200) {
+            ElMessage.success('新增成功')
+            open.value = false
+            getList()
+          }
+        })
+      }
+    }
+  })
 }
 
 /** 取消按钮 */

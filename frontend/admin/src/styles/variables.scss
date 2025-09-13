@@ -1,15 +1,15 @@
-// sidebar - 优化的现代化配色方案
-$menuText: #f8fafc;
-$menuActiveText: #60a5fa;
+// sidebar - 清新青绿色配色方案
+$menuText: #ffffff;
+$menuActiveText: #06d6a0;
 $subMenuActiveText: #ffffff;
 
-$menuBg: #0f172a;
-$menuHover: #1e293b;
+$menuBg: #118ab2;
+$menuHover: #073b4c;
 
-$subMenuBg: #020617;
-$subMenuHover: #0f172a;
+$subMenuBg: #0f4c75;
+$subMenuHover: #06d6a0;
 
-$sideBarWidth: 220px;
+$sideBarWidth: 180px;
 
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass

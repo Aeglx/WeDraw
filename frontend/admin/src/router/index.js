@@ -386,11 +386,19 @@ router.beforeEach(async (to, from, next) => {
         try {
           await userStore.getUserInfo()
           const accessRoutes = await userStore.generateRoutes(asyncRoutes)
+          
+          // 确保路由正确添加
           accessRoutes.forEach(route => {
             router.addRoute(route)
           })
+          
+          // 添加调试信息
+          console.log('Dynamic routes added:', accessRoutes.length)
+          console.log('Current routes:', router.getRoutes().map(r => r.path))
+          
           next({ ...to, replace: true })
         } catch (error) {
+          console.error('Route generation failed:', error)
           await userStore.logout()
           next(`/login?redirect=${to.path}`)
         }

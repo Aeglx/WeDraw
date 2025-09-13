@@ -109,6 +109,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { parseTime } from '@/utils/index'
 import Pagination from '@/components/Pagination/index.vue'
 
 // 响应式数据
@@ -208,11 +209,6 @@ const handleUpdate = (row) => {
 // 删除按钮操作
 const handleDelete = (row) => {
   ElMessage.info('删除功能开发中')
-}
-
-// 时间格式化
-const parseTime = (time) => {
-  return time || ''
 }
 
 // 组件挂载时获取数据

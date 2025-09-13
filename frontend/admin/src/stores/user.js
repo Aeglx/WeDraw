@@ -151,6 +151,12 @@ export const useUserStore = defineStore('user', {
         } else {
           accessedRoutes = filterAsyncRoutes(asyncRoutes, this.roles)
         }
+        
+        // 添加调试信息
+        console.log('User roles:', this.roles)
+        console.log('Generated routes:', accessedRoutes.length)
+        console.log('Routes details:', accessedRoutes.map(r => ({ path: r.path, name: r.name })))
+        
         this.routes = accessedRoutes
         resolve(accessedRoutes)
       })

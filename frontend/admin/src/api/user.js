@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 用户登录
 export function login(data) {
   return request({
-    url: '/user/auth/login',
+    url: '/api/user/auth/login',
     method: 'post',
     data
   })
@@ -12,7 +12,7 @@ export function login(data) {
 // 用户登出
 export function logout() {
   return request({
-    url: '/user/auth/logout',
+    url: '/api/user/auth/logout',
     method: 'post'
   })
 }
@@ -20,7 +20,7 @@ export function logout() {
 // 获取用户信息
 export function getUserInfo() {
   return request({
-    url: '/user/profile',
+    url: '/api/user/profile',
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export function getUserInfo() {
 // 获取用户列表
 export function getUserList(params) {
   return request({
-    url: '/user/list',
+    url: '/api/user/list',
     method: 'get',
     params
   })
@@ -37,7 +37,7 @@ export function getUserList(params) {
 // 创建用户
 export function createUser(data) {
   return request({
-    url: '/user/create',
+    url: '/api/user/create',
     method: 'post',
     data
   })
@@ -72,7 +72,7 @@ export function resetUserPassword(id, data) {
 // 获取角色列表
 export function getRoleList() {
   return request({
-    url: '/user/roles',
+    url: '/api/user/roles',
     method: 'get'
   })
 }
@@ -80,7 +80,7 @@ export function getRoleList() {
 // 创建角色
 export function createRole(data) {
   return request({
-    url: '/user/roles',
+    url: '/api/user/roles',
     method: 'post',
     data
   })
