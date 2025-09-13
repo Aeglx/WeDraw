@@ -2,8 +2,8 @@
   <div class="login-container">
     <el-form
       ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
+      :model="state.loginForm"
+      :rules="state.loginRules"
       class="login-form"
       auto-complete="on"
       label-position="left"
@@ -18,7 +18,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="state.loginForm.username"
           placeholder="用户名"
           name="username"
           type="text"
@@ -32,10 +32,10 @@
           <el-icon><Lock /></el-icon>
         </span>
         <el-input
-          :key="passwordType"
+          :key="state.passwordType"
           ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
+          v-model="state.loginForm.password"
+          :type="state.passwordType"
           placeholder="密码"
           name="password"
           tabindex="2"
@@ -43,12 +43,12 @@
           @keyup.enter="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <el-icon><component :is="passwordType === 'password' ? 'View' : 'Hide'" /></el-icon>
+          <el-icon><component :is="state.passwordType === 'password' ? 'View' : 'Hide'" /></el-icon>
         </span>
       </el-form-item>
 
       <el-button
-        :loading="loading"
+        :loading="state.loading"
         type="primary"
         style="width: 100%; margin-bottom: 30px"
         @click.prevent="handleLogin"

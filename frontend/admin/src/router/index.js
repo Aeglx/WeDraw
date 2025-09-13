@@ -131,7 +131,7 @@ export const asyncRoutes = [
       {
         path: 'contacts',
         name: 'WecomContacts',
-        component: () => import('@/views/wecom/contacts.vue'),
+        component: () => import('@/views/wecom/contacts/index.vue'),
         meta: {
           title: '通讯录',
           icon: 'Notebook'
@@ -370,5 +370,15 @@ router.beforeEach(async (to, from, next) => {
 router.afterEach(() => {
   NProgress.done()
 })
+
+// 重置路由
+export function resetRouter() {
+  const newRouter = createRouter({
+    history: createWebHistory(),
+    routes: constantRoutes,
+    scrollBehavior: () => ({ y: 0 })
+  })
+  router.matcher = newRouter.matcher
+}
 
 export default router
