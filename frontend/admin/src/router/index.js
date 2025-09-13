@@ -27,11 +27,7 @@ export const constantRoutes = [
       title: '页面不存在',
       hidden: true
     }
-  }
-]
-
-// 动态路由
-export const asyncRoutes = [
+  },
   {
     path: '/',
     component: Layout,
@@ -48,7 +44,11 @@ export const asyncRoutes = [
         }
       }
     ]
-  },
+  }
+]
+
+// 动态路由
+export const asyncRoutes = [
   {
     path: '/user',
     component: Layout,

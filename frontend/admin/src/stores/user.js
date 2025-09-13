@@ -24,11 +24,35 @@ export const useUserStore = defineStore('user', {
     async login(userInfo) {
       const { username, password } = userInfo
       try {
-        const response = await login({ username: username.trim(), password })
-        const { token } = response.data
-        this.token = token
-        setToken(token)
-        return response
+        // 模拟登录逻辑，用于演示
+        if (username.trim() === 'admin' && password.length >= 1) {
+          const mockToken = 'mock-token-' + Date.now()
+          const mockResponse = {
+            data: {
+              token: mockToken
+            }
+          }
+          this.token = mockToken
+          setToken(mockToken)
+          
+          // 设置模拟用户信息
+          this.name = 'Administrator'
+          this.avatar = ''
+          this.email = 'admin@wedraw.com'
+          this.roles = ['admin']
+          this.permissions = ['*']
+          
+          return mockResponse
+        } else {
+          throw new Error('用户名或密码错误')
+        }
+        
+        // 真实API调用（当后端服务可用时）
+        // const response = await login({ username: username.trim(), password })
+        // const { token } = response.data
+        // this.token = token
+        // setToken(token)
+        // return response
       } catch (error) {
         throw error
       }
@@ -37,27 +61,49 @@ export const useUserStore = defineStore('user', {
     // 获取用户信息
     async getUserInfo() {
       try {
-        const response = await getUserInfo()
-        const { data } = response
-        
-        if (!data) {
-          throw new Error('验证失败，请重新登录')
+        // 模拟用户信息（开发环境）
+        if (this.token && this.token.startsWith('mock-token-')) {
+          const mockUserInfo = {
+            name: this.name || 'Admin',
+            avatar: this.avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+            email: this.email || 'admin@wedraw.com',
+            roles: this.roles.length > 0 ? this.roles : ['admin'],
+            permissions: this.permissions.length > 0 ? this.permissions : ['*:*:*']
+          }
+          
+          this.name = mockUserInfo.name
+          this.avatar = mockUserInfo.avatar
+          this.email = mockUserInfo.email
+          this.roles = mockUserInfo.roles
+          this.permissions = mockUserInfo.permissions
+          
+          return mockUserInfo
         }
-
-        const { name, avatar, email, roles, permissions } = data
         
-        // 角色必须是非空数组
-        if (!roles || roles.length <= 0) {
-          throw new Error('用户角色不能为空')
-        }
-
-        this.name = name
-        this.avatar = avatar
-        this.email = email
-        this.roles = roles
-        this.permissions = permissions || []
+        // 真实API调用（当后端服务可用时）
+        // const response = await getUserInfo()
+        // const { data } = response
+        // 
+        // if (!data) {
+        //   throw new Error('验证失败，请重新登录')
+        // }
+        //
+        // const { name, avatar, email, roles, permissions } = data
+        // 
+        // // 角色必须是非空数组
+        // if (!roles || roles.length <= 0) {
+        //   throw new Error('用户角色不能为空')
+        // }
+        //
+        // this.name = name
+        // this.avatar = avatar
+        // this.email = email
+        // this.roles = roles
+        // this.permissions = permissions || []
+        // 
+        // return data
         
-        return data
+        throw new Error('后端服务未启动，请使用模拟登录')
       } catch (error) {
         throw error
       }
@@ -66,7 +112,15 @@ export const useUserStore = defineStore('user', {
     // 用户登出
     async logout() {
       try {
-        await logout()
+        // 模拟登出（开发环境）
+        if (this.token && this.token.startsWith('mock-token-')) {
+          // 模拟登出成功，直接清理本地状态
+          console.log('模拟登出成功')
+        } else {
+          // 真实API调用（当后端服务可用时）
+          // await logout()
+          console.log('后端服务未启动，执行本地登出')
+        }
       } catch (error) {
         console.error('登出失败:', error)
       } finally {

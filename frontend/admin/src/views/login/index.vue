@@ -180,59 +180,133 @@ $cursor: #fff;
 .login-container {
   .el-input {
     display: inline-block;
-    height: 47px;
+    height: 50px;
     width: 85%;
 
     input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: $light_gray;
-      height: 47px;
-      caret-color: $cursor;
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 12px 15px;
+      color: #495057;
+      height: 50px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      caret-color: #409eff;
+
+      &:focus {
+        border-color: #409eff;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.1);
+        outline: none;
+      }
+
+      &::placeholder {
+        color: #adb5bd;
+        font-weight: 400;
+      }
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
+        box-shadow: 0 0 0px 1000px #f8f9fa inset !important;
+        -webkit-text-fill-color: #495057 !important;
+        border-radius: 12px !important;
       }
     }
   }
 
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    position: relative;
+    
+    &.is-error {
+      .el-input input {
+        border-color: #f56565;
+        background: #fef5f5;
+      }
+    }
+  }
+
+  .el-button {
+    height: 50px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #409eff 0%, #66b1ff 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &.is-loading {
+      opacity: 0.8;
+    }
   }
 }
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
+$primary: #409eff;
+$primary-light: #66b1ff;
 $dark_gray: #889aa4;
 $light_gray: #eee;
+$white: #ffffff;
+$shadow: rgba(0, 0, 0, 0.1);
 
 .login-container {
   min-height: 100vh;
   width: 100%;
-  background-color: $bg;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  position: relative;
+
+  // 添加动态背景效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+    animation: float 20s ease-in-out infinite;
+  }
 
   .login-form {
     position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
+    width: 450px;
+    max-width: 90%;
+    padding: 50px 40px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+    animation: slideUp 0.8s ease-out;
+    z-index: 1;
   }
 
   .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 10px;
+    border-left: 4px solid $primary;
 
     span {
       &:first-of-type {
@@ -243,32 +317,93 @@ $light_gray: #eee;
 
   .svg-container {
     padding: 6px 5px 6px 15px;
-    color: $dark_gray;
+    color: $primary;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
+    transition: color 0.3s ease;
   }
 
   .title-container {
     position: relative;
+    margin-bottom: 40px;
 
     .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
+      font-size: 32px;
+      color: #2c3e50;
+      margin: 0;
       text-align: center;
-      font-weight: bold;
+      font-weight: 700;
+      background: linear-gradient(135deg, $primary 0%, $primary-light 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(135deg, $primary 0%, $primary-light 100%);
+        border-radius: 2px;
+      }
     }
   }
 
   .show-pwd {
     position: absolute;
-    right: 10px;
-    top: 7px;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
     font-size: 16px;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+}
+
+// 动画效果
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .login-container {
+    .login-form {
+      width: 95%;
+      padding: 40px 30px;
+      margin: 20px;
+    }
+
+    .title-container .title {
+      font-size: 28px;
+    }
   }
 }
 </style>
